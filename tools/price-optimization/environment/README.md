@@ -1,49 +1,43 @@
 <!-- SPDX-License-Identifier: LicenseRef-Praesidium-Humanitatis-Worker-Protection-1.0 -->
 
-# Price optimization environment
+# Price optimization in the shared GPU environment
 
-The user approved this definition on 2026-09-20. The container was created and
-provisioned with the pinned CPU toolchain; its full verified ID is
-`5738ae552c575e91e0d4308b8aa2c66aa170e8dd817282fd7abd5817907d3ff9`.
+The user requested removal of `post-profit-economics-cpu` on 2026-10-05.
+The optimizer now uses the recovered shared container `post-profit-economics-gpu`,
+immutable ID `d790ed5301151c20b084a703acf6f04472234deb7cd6fd2c8c5d0b218f46b40e`.
+Its [authoritative environment guide](../../../docs/environment.md) records
+the recovered Debian image, exact mounts, labels and verified NVIDIA access.
+There are no named volumes or published ports; restart policy is `no`.
+The canonical Windows root is `C:\Work\post-profit-economics`; it binds directly
+to `/workspace/praesidium-humanitatis`. The old Windows folder and junction are gone.
 
-The launcher, setup and task scripts adapt existing MIT code from the TFT tool. Their inherited portions retain MIT permission, with the complete original notice preserved in [LICENSE-MIT-TFT-LAUNCHER](LICENSE-MIT-TFT-LAUNCHER). New copyrightable optimizer modifications use the [Worker Protection License](../LICENSE). The scripts' composite SPDX expression records both sets of obligations; it does not withdraw MIT rights in inherited code. [NOTICE.md](NOTICE.md) identifies the source files and modifications. The copied dependency pins remain under MIT.
+`environment/container.ps1` forwards lifecycle and exec actions to the TFT
+launcher. It cannot create a separate CPU container. Both entry points verify
+and reuse the same managed GPU container, including when stopped; mismatches
+are preserved. Native optimizer and simulation targets retain their existing
+CPU behavior while running in this shared environment.
 
-| Setting | Approved value |
-| --- | --- |
-| Container name | `praesidium-humanitatis-price-optimization` |
-| Base image | `debian@sha256:6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443` (Debian 12, Linux amd64) |
-| Command | `/bin/bash`, interactive and TTY |
-| User | Container root |
-| Bind mount | Repository root (currently `C:\Work\praesidium-humanitatis`) to `/workspace/praesidium-humanitatis`, read/write |
-| Working directory | `/workspace/praesidium-humanitatis` |
-| Named volumes / published ports | None / none |
-| Restart policy | `no` |
-| GPU / other devices | None / none |
-| Network / privileged | Default bridge / false |
-| Shared memory | 64 MiB |
-| Ownership labels | `org.praesidium-humanitatis.managed-by=praesidium-humanitatis`, `project-root=<absolute repository root>` |
-| Configuration labels | `org.praesidium-humanitatis.configuration=1`, `org.praesidium-humanitatis.tool=price-optimization` |
+The launcher, setup and task scripts adapt MIT TFT material. Their inherited
+portions retain MIT permission, with the complete original notice preserved in
+[LICENSE-MIT-TFT-LAUNCHER](LICENSE-MIT-TFT-LAUNCHER). New copyrightable optimizer
+modifications use the [Worker Protection License](../LICENSE).
+[NOTICE.md](NOTICE.md) records the inherited files and later forwarding change.
 
-The launcher inspects the exact name before mutation. It reuses an existing matching container, including a stopped container, and operates by verified immutable ID. A container with missing ownership labels or different configuration is preserved and reported. There is no deletion, replacement, rebuild or prune action. Creation verifies the image, container ID, command, mount, ports, devices and basic Debian environment. A failed verification leaves state available for inspection.
-
-From the repository root, `plan` requires no Docker access:
+From repository-root PowerShell:
 
 ```powershell
-.\tools\price-optimization\environment\container.ps1 plan
 .\tools\price-optimization\environment\container.ps1 status
-```
-
-Lifecycle and dependency installation are separate. The launcher reuses this
-approved container on subsequent runs:
-
-```powershell
 .\tools\price-optimization\environment\container.ps1 up
-.\tools\price-optimization\environment\container.ps1 -Action exec -Command @('bash', 'tools/price-optimization/environment/setup.sh')
 .\tools\price-optimization\environment\container.ps1 -Action exec -Command @('bash', 'tools/price-optimization/tasks.sh', 'test')
 .\tools\price-optimization\environment\container.ps1 -Action exec -Command @('bash', 'tools/price-optimization/tasks.sh', 'demo')
 ```
 
-`setup.sh` accepts no arguments and only installs dependencies and configures the environment. It uses `apt-get --no-install-recommends` with explicit CPU build dependency versions copied from the existing TFT lock. These pins cover the selected toolchain, not a complete snapshot of every transitive Debian package. The immutable image and recorded installed package inventory help audit the resulting environment; full bit-for-bit reproducibility needs an approved Debian snapshot/package archive. An unavailable pin fails installation instead of silently choosing a new version. This CPU container has no CUDA or LibTorch dependency. The dependency inventory is written to `.build/price-optimization/environment/debian-packages.txt`.
+The recovered environment already has the compiler, CMake, Python and CUDA
+packages. No dependency installer was run during recovery. `setup.sh` remains
+the historical dependency-only CPU procedure; it is not needed to launch or
+use this shared environment. Explicit dependency changes require checking the
+shared TFT package lock and environment, rather than applying a CPU lock over
+it. AMPL, its API and solver remain separately staged under their own terms.
 
 ## AMPL and solver staging
 

@@ -1,7 +1,7 @@
 # Simple exponential smoothing (EWMA)
 
 MIT-licensed, standalone C++17 simple exponential smoothing for projects in
-praesidium-humanitatis. This tool supplies an inspectable, nonseasonal,
+post-profit-economics. This tool supplies an inspectable, nonseasonal,
 single-level exponentially weighted moving average (EWMA) baseline, with
 residual uncertainty and past-only diagnostics. Its name identifies this
 specific method; it is not a general forecasting engine. It has no optimizer,

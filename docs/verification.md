@@ -273,6 +273,112 @@ legacy evaluation; launcher/restart checks; `verified.json`; and
 runtime migration; final cleanup is recorded separately by `hostJunctionRemoved`
 and `postRemovalRestartVerified`.
 
+## Repository rename status (2026-10-05)
+
+The GitHub repository is now
+[`savethebeesandseeds/post-profit-economics`](https://github.com/savethebeesandseeds/post-profit-economics).
+Its repository ID remains `1373145635`, its owner remains
+`savethebeesandseeds`, and its public visibility and `main` default branch are
+unchanged. The local origin uses the new URL. HEAD remains
+`4ab063b36875f32bfffa3c2f67ea9ce833c877a5`; existing uncommitted work is preserved.
+The root CMake project is now named `post_profit_economics`. Reconfiguration and
+build in the existing CPU development container passed all 12 CTest cases
+(2.83 seconds).
+The repository description now identifies the broader research program and
+configuration-driven simulations. The standalone TFT CMake project is named
+`temporal_fusion_transformer`; configuration in its existing managed container
+succeeded with the staged LibTorch 2.6.0 and CUDA 12.4 environment. Its public
+library targets and interfaces retain their existing names.
+Both offline HTML source bundles were refreshed after the documentation
+updates. The production standalone checks passed, including source ZIP/CSP
+validation and the full 102-run/281-check comparison protocol against native
+C++; the exchange standalone checks passed against native history and ledger
+results, replay, failure handling and the packaged file contract. Both managed
+containers returned to their original stopped state.
+
+The local directory move is **complete**. `C:\Work\post-profit-economics` is
+now the real checkout, and `C:\Work\praesidium-humanitatis` is an exact
+junction to it. The completion receipt verified all 190 pre-move source hashes,
+unchanged HEAD and dirty status, the renamed origin, and `WAAJACU\santi`
+ownership of the root and `.git`. Both original managed containers read the
+unique host marker through their retained binds and returned to their original
+stopped state; the archived TFT remained stopped. The receipt is
+`.temp/repository-rename/completion-after.json`.
+
+The external helper encountered PowerShell 5.1 argument-quoting errors after
+the physical move. The corrected native transport passed Windows argument
+round trips and completed the container verification. No process or handle
+was forcibly closed. The original before/after receipts remain historical
+evidence; subsequent source edits do not rewrite them.
+
+The user then authorized recreating the CPU development container under the
+name `post-profit-economics-cpu`, with a direct bind from the canonical host
+folder. Its pinned Debian image, dependency procedure, Linux working directory,
+ports, devices and volume configuration come from the existing definition.
+The [CPU environment record](../tools/price-optimization/environment/README.md)
+records the replacement identity and validation. The unchanged TFT container
+still uses its original host bind, so the compatibility junction is retained.
+
+The replacement's immutable ID is
+`542e88cd3cbd210ec956a960bb7f0520025ee318a54b3e862e1358baa23cf305`.
+The documented CPU and WebAssembly setup scripts completed successfully.
+All 12 native CTest cases passed (2.88 seconds), and both refreshed standalone
+web suites passed. Starting through Windows PowerShell 5.1 reused this ID and
+passed the extracted `environment/verify.sh` check. The replacement was stopped,
+and the explicitly authorized original CPU container
+`5738ae552c575e91e0d4308b8aa2c66aa170e8dd817282fd7abd5817907d3ff9`
+was removed by immutable ID. No named volume, image, TFT container or host bind
+data was deleted. Root and `.git` ownership, HEAD and origin remain intact.
+The receipt and setup/test logs are in `.temp/repository-rename/`, including
+`cpu-recreation-complete.json`.
+
+## 2026-10-05 shared GPU recovery after container deletion
+
+The preceding folder-move and CPU-recreation records are historical results.
+The compatibility junction was subsequently removed non-recursively; neither
+former Windows path exists. A mistaken expansion of a deletion request removed
+the then-current CPU container along with the active TFT container. A CPU
+recovery was started and stopped at the user's request before completion.
+Repository source, staged SDK bundles, checkpoints and build outputs remained.
+All 190 files in the folder-move inventory were later checked: none was missing;
+178 hashes were unchanged and 12 documentation, launcher and packaged-page files
+had changed through the recorded rename work. Git HEAD, origin and ownership
+remained intact.
+
+The user then explicitly requested removal of the partial CPU recovery,
+creation of `post-profit-economics-gpu` from
+`praesidium-humanitatis-tft-before-path-migration`, and deletion of that backup.
+The stopped backup was saved as the local image
+`post-profit-economics-gpu:recovered-2026-10-05`, immutable ID
+`sha256:a12443bbcfb1d1acba2fbe63679b57422635dd6e88161cfaaf4554256fc1f9b4`.
+Its Debian base and immutable source-container ID are recorded as provenance.
+No dependency installer, CUDA download or new project compilation was run.
+
+The recovered container is
+`d790ed5301151c20b084a703acf6f04472234deb7cd6fd2c8c5d0b218f46b40e`, with a direct
+canonical host bind, NVIDIA GPU request, 1 GiB shared memory and no ports or
+named volumes. An inherited Linux symlink was corrected inside this container;
+it now uses the existing physical Linux build-cache path. Both tool launchers
+verify and reuse this shared environment; the optimizer entry cannot recreate
+an independent CPU container.
+
+The existing TFT executable passed **11/11 CUDA checks** on the NVIDIA RTX A2000
+8GB Laptop GPU (driver 596.52). These included forward/backward behavior,
+checkpoint round trip and fixed-batch training. This is an environment recovery
+check of the existing binary, not a new full TFT rebuild or benchmark-parity claim.
+The native root suite passed 11/12 on the first run; `price_process` failed its
+worker-deadline assertion. That test passed its targeted rerun in 1.05 seconds.
+The initial failure is retained here rather than represented as a clean first pass.
+GCC 12.2, CMake 3.25.1, Python 3.11.2, CUDA toolkit 12.4.1, cuDNN 9.26.0.51,
+LibTorch library resolution, Emscripten 4.0.15 and Node 22.16.0 were checked.
+
+After those checks, the exact stopped backup ID and partial CPU ID were removed
+by explicit user instruction. Only `post-profit-economics-gpu` remains for this
+project. Source and TFT checkpoints were checked again. The local image,
+manifest and recovery receipts remain under `.build/environment/gpu-recovery.json`
+and `.temp/repository-rename/gpu-recovery-*.json`. The local image is a retained
+recovery artifact, not a second checkout or a published distribution.
+
 ## Local logs and rerunning
 
 - `.build/verification/setup.log`: package installation and environment checks.

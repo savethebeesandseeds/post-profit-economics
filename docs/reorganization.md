@@ -6,6 +6,16 @@ allocation. The [research framework](post-profit-economics.md) defines this
 institutional scope; the [research plan](research-plan.md) connects it to work
 in the repository.
 
+The repository is named `post-profit-economics`; its root CMake project is
+`post_profit_economics`. Praesidium Humanitatis remains the research institution
+named in this framework. The standalone TFT build project is named
+`temporal_fusion_transformer`; its public library interfaces retain their
+existing names. On 2026-10-05 the GitHub repository and local origin
+were renamed, and the Windows checkout moved to `C:\Work\post-profit-economics`.
+The old folder and junction are gone. One shared recovered NVIDIA GPU container,
+`post-profit-economics-gpu`, uses the canonical checkout directly. See the
+[environment record](environment.md) for its current configuration.
+
 `projects/` contains research demonstrations of those models. `tools/` contains
 reusable technical capabilities with independent validation and explicit
 licenses. [`simulation/`](../simulation/README.md) is the home for a shared
@@ -17,7 +27,10 @@ or human outcomes remain separate claims.
 
 The store is an exchange demonstration with distribution and allocation
 mechanisms.
-Production models for factories and laboratories remain future work. The
+The [production project](../projects/post-profit-production/README.md) now has
+an initial configuration-driven C++ resource/schedule simulator, experiment
+runner and independent offline WebAssembly view. It remains
+project-owned; funded operation and empirical production models are future work. The
 institutional framing preserves the existing implementation, licenses and
 validation records.
 
@@ -79,9 +92,9 @@ backend remains available through `ph.price.v3`; it does not run in the HTML.
 Synthetic accounts and plain charts are implemented. Operational integration,
 governance and broader risk management follow later.
 
-Factory and laboratory applications belong in their own future project folders,
-with distinct operating models and appropriate tools. The production and
-distribution folders remain placeholders. Pricing-specific source names,
+Production has its own configuration-driven model and project boundary;
+distribution remains a separate placeholder. Connecting productive units to
+the store requires explicit resource, time and transfer contracts. Pricing-specific source names,
 build targets, API versions and the optimizer container still identify the
 existing pricing tool; the store project has its own name and scope.
 

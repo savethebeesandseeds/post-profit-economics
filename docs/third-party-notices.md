@@ -7,10 +7,12 @@ neither project license replaces them.
 
 - nlohmann/json 3.12.0: vendored under MIT in the optimizer's
   `third_party/nlohmann/` directory, expressly excluded from its custom license.
+  The production simulator also references this header without linking the
+  pricing engine. Its application code remains MIT.
   The unmodified header was verified against the upstream release's published
   SHA-256. See its [provenance and license](../tools/price-optimization/third_party/nlohmann/PROVENANCE.md).
 
-- Emscripten 4.0.15: builds the exchange simulator's WebAssembly and JavaScript
+- Emscripten 4.0.15: builds the exchange and production WebAssembly and JavaScript
   runtime. Its MIT runtime notice and the bundled LLVM C/C++/compiler-rt,
   libunwind and musl notices are embedded in the standalone HTML and its source
   archive. The compiler SDK remains ignored local build data. See the
@@ -58,3 +60,6 @@ Vendor dependency binaries and working build artifacts stay in ignored `.build/`
 and `.temp/` directories. The explicit exception is the exchange project's
 standalone HTML in its `dist/` folder: it embeds the compiled simulation and
 pricing code, runtime notices and corresponding source, without AMPL binaries.
+The production project's `dist/` HTML is another explicit exception; it embeds
+only its MIT simulation/experiment code, JSON dependency, runtime notices and
+corresponding source. It does not link the pricing engine.

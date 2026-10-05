@@ -69,15 +69,19 @@ splitting, and feature provenance must be handled by a future data pipeline.
 
 ## Build and run
 
-The Windows project folder is `C:\Work\praesidium-humanitatis`; the repository is
-[praesidium-humanitatis](https://github.com/savethebeesandseeds/praesidium-humanitatis).
+The repository is
+[post-profit-economics](https://github.com/savethebeesandseeds/post-profit-economics).
+The canonical Windows project folder is `C:\Work\post-profit-economics`;
+the folder move was completed and verified on 2026-10-05. The shared
+`post-profit-economics-gpu` container binds that real folder directly. Its
+installed CUDA environment was recovered from the older TFT backup; the CPU
+container, backup container and old host junction have been removed.
 See [the exact container definition and prerequisites](../../docs/environment.md).
 The local Linux LibTorch bundle belongs in `.build/deps/libtorch`. The project
 container configuration has been approved and created. Run from this root in PowerShell:
 
 ```powershell
 .\tools\temporal-fusion-transformer\environment\container.ps1 up
-.\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/environment/setup.sh')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'test')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'test-cuda')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'demo', '--device', 'cuda', '--steps', '80')

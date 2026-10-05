@@ -1,9 +1,14 @@
-# Praesidium Humanitatis
+# Post-profit economics
 
 Praesidium Humanitatis is a research institution dedicated to the discovery
 and formalization of **post-profit-economic models of production,
 distribution, exchange and allocation**. Its research program is
 **post-profit economics** (`post-profit-economics`).
+
+Repository: [savethebeesandseeds/post-profit-economics](https://github.com/savethebeesandseeds/post-profit-economics).
+The Windows checkout is `C:\Work\post-profit-economics`; the old folder and
+junction have been removed. Development uses the shared NVIDIA GPU container
+`post-profit-economics-gpu`. See the [environment guide](docs/environment.md).
 
 We investigate how economic activity can meet human needs, reduce suffering
 and sustain the people and resources on which it depends. In this program,
@@ -71,10 +76,15 @@ stock, procurement, sales, accounts and worker benefit. A
 provides plain controls, charts and reconciled accounts. Live integration and
 evaluation with observed operating data remain future work.
 
-Future factory and laboratory demonstrations can investigate **production**
-and its connections to the other areas, with their own operating models and
-specifications. Those projects have not yet been defined. Demonstrations
-belong in `projects/`; reusable research capabilities belong in `tools/`.
+[post-profit-production](projects/post-profit-production/README.md) is an initial
+**production** demonstration with a configuration-driven C++ simulator and its
+own [offline web view](projects/post-profit-production/dist/post-profit-production.html). Resources,
+processes, labor, reusable capacity, production timelines and risk assumptions
+are configured independently of any particular industry. It records quantity
+balances, work, interruptions and fixed compensation obligations; funded payments,
+governance, financing and economic viability remain research work. The initial
+model is a bounded synthetic prototype, not a universal production model.
+Demonstrations belong in `projects/`; reusable research capabilities belong in `tools/`.
 
 The separate pricing tool used by the store project selects one public price
 per product, enforces affordability and price-change bounds, and requires
@@ -143,7 +153,7 @@ tools/
 projects/
   post-profit-exchange/               store simulation, specification, standalone HTML (MIT application)
   post-profit-distribution/           preserved research placeholder
-  post-profit-production/             research placeholder
+  post-profit-production/             configured production simulator, experiments, standalone web view
   post-profit-allocation/             research placeholder
   post-profit-assurance/              continuity-support contract placeholder; no funded payouts
 simulation/                          shared tycoon engine; initial design and integration plan

@@ -77,8 +77,14 @@ and reproduce the same results regardless of frame rate or playback speed.
 
 After store playback, add world editing and incremental model interfaces, then
 production, transport and allocation through their project contracts. Production
-recipes, labor capacity, travel time, storage and resource limits must affect
-the simulation through explicit rules. Their models still need to be developed.
+processes, labor capacity, travel time, storage and resource limits must affect
+the simulation through explicit rules. The initial
+[production simulator](../projects/post-profit-production/README.md) models
+configured stages, resources, labor, capacity, timelines and risk without a
+renderer. Its world/exchange adapters remain future work: units, clocks and
+transfers must be explicit, and the existing store's daily contract must not be
+silently equated to a production tick. Transport and broader allocation models
+still need to be developed.
 
 Choose the rendering technology and visual perspective when building the first
 scene. Keep the economic state accessible to headless runs and automated

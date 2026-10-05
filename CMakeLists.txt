@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: MIT
 cmake_minimum_required(VERSION 3.25)
-project(praesidium_humanitatis VERSION 0.4.0 LANGUAGES CXX)
+project(post_profit_economics VERSION 0.4.0 LANGUAGES CXX)
 include(CTest)
 
 option(PH_BUILD_TFT "Build the MIT Temporal Fusion Transformer (requires LibTorch)" OFF)
 option(PH_BUILD_EXPONENTIAL_SMOOTHING "Build the standalone MIT simple exponential smoothing tool" ON)
 option(PH_BUILD_PRICE_OPTIMIZATION "Build the separately licensed price optimization tool" ON)
 option(PH_BUILD_EXCHANGE "Build the synthetic exchange simulation (uses the separately licensed optimizer)" OFF)
+option(PH_BUILD_PRODUCTION "Build the configuration-driven synthetic production simulator" OFF)
 
 if(PH_BUILD_TFT)
   add_subdirectory(tools/temporal-fusion-transformer)
@@ -19,4 +20,7 @@ if(PH_BUILD_PRICE_OPTIMIZATION)
 endif()
 if(PH_BUILD_EXCHANGE)
   add_subdirectory(projects/post-profit-exchange)
+endif()
+if(PH_BUILD_PRODUCTION)
+  add_subdirectory(projects/post-profit-production)
 endif()

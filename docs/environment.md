@@ -1,71 +1,63 @@
-# CUDA development environment
+# Shared GPU development environment
 
-This environment belongs to the MIT Temporal Fusion Transformer tool. The price
-optimizer has a [separate CPU container definition](../tools/price-optimization/environment/README.md).
-
-The environment was initially created on 2026-09-16. The user approved a
-replacement on 2026-09-17 to remove the original project path from its immutable
-mount configuration. The launcher reuses the replacement on subsequent runs.
-See `verification.md` for dependency, build, and model-test results.
+TFT, price optimization, production and exchange use one managed container:
+`post-profit-economics-gpu`. On 2026-10-05, the user requested recovery from the
+installed TFT backup, removal of the CPU container, and deletion of the backup
+after verification. The recovery preserved the installed CUDA environment;
+no dependency installer or large toolchain download was run.
 
 ## Container configuration
 
 | Setting | Value |
 | --- | --- |
-| Container name | `praesidium-humanitatis-tft` |
-| Base image | `debian@sha256:6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443` (Debian 12) |
-| Command | `/bin/bash`, interactive with a TTY |
-| Bind mount | `C:\Work\praesidium-humanitatis` to `/workspace/praesidium-humanitatis`, read/write |
-| Working directory | `/workspace/praesidium-humanitatis` |
-| Named volumes | None |
-| Published ports | None |
+| Container name | `post-profit-economics-gpu` |
+| Immutable container ID | `d790ed5301151c20b084a703acf6f04472234deb7cd6fd2c8c5d0b218f46b40e` |
+| Local recovered image | `post-profit-economics-gpu:recovered-2026-10-05` |
+| Immutable image ID | `sha256:a12443bbcfb1d1acba2fbe63679b57422635dd6e88161cfaaf4554256fc1f9b4` |
+| Original base | `debian@sha256:6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443` (Debian 12, Linux amd64) |
+| Command / user | `/bin/bash`, interactive and TTY / root |
+| Bind mount / working directory | `C:\Work\post-profit-economics` to `/workspace/praesidium-humanitatis`, read/write / that directory |
+| Named volumes / published ports | None / none |
 | Restart policy | `no` |
-| GPU/device access | All NVIDIA GPUs; no additional devices |
+| GPU / other devices | All NVIDIA GPUs / none |
 | Shared memory | 1 GiB |
-| Network | Docker's default bridge |
-| Privileged mode | Disabled |
+| Network / privileged | Default bridge / false |
+| Ownership labels | `org.post-profit-economics.managed-by=post-profit-economics`, canonical project root |
+| Configuration labels | Configuration `1`, LibTorch `2.6.0+cu124-cxx11`, immutable recovery-source ID |
 
-`container.ps1 plan` prints the actual host project path. The launcher derives it
-from its own location and checks the full immutable container ID, image ID,
-ownership/configuration labels, bind mount, command, GPU request, ports, and other
-settings before operating on an existing container. A stopped matching container
-is reused. An unmanaged or mismatched same-named container is preserved and
-rejected. No launcher action deletes or rebuilds a container, image, or volume.
+The snapshot came from the stopped container
+`fb76bcc496b41c383fd4363cb5c2af15a877076beb4254d2af957dab6eba4b24`, formerly
+`praesidium-humanitatis-tft-before-path-migration`. That backup and
+`post-profit-economics-cpu` have now been deleted by explicit user instruction.
+Only the GPU container remains for this project. The old Windows paths
+`C:\Work\praesidium-humanitatis` and `C:\Work\Ad-humanitatem` are absent.
 
-### Path migration and preserved backup
+The local image manifest is `.build/environment/gpu-recovery.json`. The launcher
+pins the immutable image ID and checks its recovery-source and base-image
+provenance, container identity, labels, command, canonical bind, GPU request,
+ports and other configuration before mutation. It reuses a matching stopped
+container and preserves mismatches. If the local image or manifest is missing,
+it fails rather than silently starting an empty Debian environment or installing
+dependencies. This local snapshot is a recovery artifact, not a portable
+reproducible package or a published image.
 
-The active container is
-`54c46d9b14dade26168d872e65113196fcc823d2e14d865162df002eaf9a132c`.
-Its mount, working directory and ownership labels all use the new project name,
-exactly as shown in the table. It does not require the old host junction or an
-internal compatibility link. The launcher no longer accepts the legacy mount
-configuration. Its shell profile is `/etc/profile.d/praesidium-humanitatis.sh`.
+The snapshot inherited a Linux symlink from the September path migration.
+`environment/normalize-bind.sh` corrects that inspected symlink inside the
+container; the launcher restarts the same container only when needed to apply
+the corrected bind target. The Windows checkout is never copied or linked.
+Both tool launchers use this shared GPU container. The optimizer entry forwards
+to the TFT launcher and cannot recreate a separate CPU environment.
 
-The original container remains stopped as
-`praesidium-humanitatis-tft-before-path-migration`, ID
-`fb76bcc496b41c383fd4363cb5c2af15a877076beb4254d2af957dab6eba4b24`.
-Its installed environment is preserved. Do not start that archived container:
-its immutable bind source still names the old path and could recreate it.
-No Docker container, image or volume was deleted during the migration.
+CUDA execution was verified on the NVIDIA RTX A2000 8GB Laptop GPU: the existing
+TFT executable passed all 11 CUDA checks. GCC 12.2, CMake 3.25.1, Python 3.11.2,
+CUDA toolkit 12.4.1, cuDNN 9.26.0.51, LibTorch 2.6.0+cu124 and the staged
+Emscripten 4.0.15 / Node 22.16.0 executables were checked. Existing native checks
+passed except one deadline assertion on the initial pass; that test passed its
+targeted rerun. See [verification](verification.md) for the recorded limits.
 
-Use `C:\Work\praesidium-humanitatis` for all editor sessions and commands.
-At migration verification time, the old host junction remained locked by Codex
-helper processes (Windows sharing violation 32). It has **not been removed**;
-no background cleanup is scheduled. Close Codex normally and run this one-off
-command from a separate PowerShell window:
-
-```powershell
-powershell -NoProfile -File "C:\Work\praesidium-humanitatis\.temp\finish-rename\complete-cleanup.ps1"
-```
-
-The local helper checks the exact junction target, repository ownership, Git
-identity and saved checkpoint before nonrecursive removal. It then restarts
-only the verified replacement container and confirms the old path stays absent.
-No process is terminated and no Docker object is deleted. Inspect
-`.build/verification/path-migration/junction-cleanup.json` for the removal
-outcome and `verified.json` for `hostJunctionRemoved` and
-`postRemovalRestartVerified`; `completion.log` is written only after all final
-checks pass. These scripts and records are local migration artifacts.
+Ignored `.temp/` migration scripts and receipts are historical records. They
+must not be rerun to recreate former names or paths. Host source, SDK bundles,
+model checkpoints and existing build artifacts were retained.
 
 ## Dependency provenance
 
@@ -102,12 +94,11 @@ CUDA stub libraries must never be placed on the runtime library path.
 
 ## Provision and verify
 
-Run these commands from the project root in PowerShell, after staging LibTorch:
+The recovered environment already contains its installed dependencies and staged LibTorch. Run these commands from the project root in PowerShell. Dependency installation is an explicit separate operation; do not rerun setup merely to start this container:
 
 ```powershell
 .\tools\temporal-fusion-transformer\environment\container.ps1 plan
 .\tools\temporal-fusion-transformer\environment\container.ps1 up
-.\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/environment/setup.sh')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'test')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'test-cuda')
 .\tools\temporal-fusion-transformer\environment\container.ps1 -Action exec -Command @('bash', 'tools/temporal-fusion-transformer/tasks.sh', 'demo', '--device', 'cuda', '--steps', '80')

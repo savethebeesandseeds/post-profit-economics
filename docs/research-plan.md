@@ -16,7 +16,7 @@ require separate evidence.
 
 | Area | Initial research direction | Next evidence or definition needed |
 | --- | --- | --- |
-| **Production** | Worker-governed factory and laboratory models. | Select a concrete productive process; define inputs, outputs, work, capacity, governance and continuity before creating a demonstration project. |
+| **Production** | Configuration-driven models of worker-governed productive units: resources, processes, labor, capacity, timelines and risk. | Evaluate the initial synthetic simulator, establish funded operating accounts and governance, and assess production/risk assumptions against appropriate observations. |
 | **Distribution** | Provision, transport and availability of goods; a separate project placeholder. | Define a distribution model, its participants, resources and evidence requirements. |
 | **Exchange** | The `post-profit-exchange` store model, followed by comparison with other mechanisms where appropriate. | Evaluate operating-balance feedback against empirical demand response; define settlement workflow and distinguish supplied scenarios from evidence of actual response to prices. |
 | **Allocation** | Store budgets and surplus; a separate project placeholder. | Specify decision rights, priorities, shortage rules and outcome measures for each setting. |
@@ -24,7 +24,10 @@ require separate evidence.
 The store now has an initial synthetic C++/WebAssembly simulator and reconciled
 accounts and operating-balance feedback. Its next research work is empirical
 evidence of stability, affordability and continuity.
-Production and allocation models remain to be defined. The
+Production now has an initial configuration-driven resource/schedule simulator,
+a scheduling experiment runner and its own offline web view;
+funded operation and governance remain to be defined. Separate allocation
+models also remain to be defined. The
 [adversarial-cooperation track](adversarial-cooperation.md) examines transition
 and incumbent interests; its protocol remains future work.
 
@@ -101,6 +104,35 @@ to TFT before selecting an integration design. Establish evaluation criteria for
 that contract and test the combined engine against appropriate alternatives.
 Forecast quality and the value added by the integration require separate evidence.
 Do not assume query inspection is an alert or intervention rule.
+
+## Production demonstration: resources, labor, timelines and risk
+
+The [production project](../projects/post-profit-production/README.md) defines
+a general architecture for configured productive units rather than choosing
+one industry. Its initial C++ simulator advances acyclic production stages
+under finite resource, labor and reusable-capacity constraints. Work rates,
+FIFO/earliest-deadline policies, scheduled shocks and seeded risk assumptions
+determine the trajectory. Timelines can stretch; declared elapsed-time exposure
+can affect interruption and output-loss probabilities. The independent
+[web view](../projects/post-profit-production/web/README.md) uses the same C++
+engine through WebAssembly, with recorded timelines, resource/pool inspection
+and configurable scheduling comparisons. These views add inspectability;
+they do not change the evidence stage.
+
+The [specification](../projects/post-profit-production/PRODUCTION_SPECIFICATION.md)
+separates quantity/scheduling correctness from economic and human outcomes.
+Fixed compensation obligations are recorded without modeled settlement.
+Initial resources, fixed ratios and risk coefficients are explicit assumptions.
+No funding, worker consent, ownership, fitted production function or calibrated
+risk follows from this prototype.
+
+Evaluate independently calculated trajectories and negative cases first, then
+compare policies across predeclared configurations and seeds. Preserve shared
+external shocks and actual differences in timeline-dependent exposure. Develop
+funded accounts and worker-approved operating rules before making viability
+claims. Establish clock, unit and transfer contracts before connecting to the
+store or world engine. Observed production and worker outcomes are separate
+later evidence requirements.
 
 ## Exchange demonstration: store operation, distribution and allocation
 

@@ -86,11 +86,14 @@ results. Conclusions apply only to the conditions evaluated.
 | Project | Economic model under study | Current evidence boundary |
 | --- | --- | --- |
 | [post-profit-exchange](../projects/post-profit-exchange/README.md) | Worker-governed store operation centered on public-price exchange, with distribution and allocation of inventory, budgets and surplus. | Standalone synthetic C++/WebAssembly simulation, reconciled accounts and actual-sales feedback; empirical stability and operational evaluation remain open. |
+| [post-profit-production](../projects/post-profit-production/README.md) | Configuration-driven production with declared resources, processes, labor, capacity, timelines and risks; allocation of finite productive capacity. | Synthetic C++/WebAssembly simulator, configurable scheduling comparisons and independent offline web view; funded compensation, governance and empirical evaluation remain open. |
 
-Production is part of the institution's mandate. Factory and laboratory models
-are prospective demonstrations; the production folder is a placeholder with no
-operating model yet. Broader exchange and allocation models can be studied as the program
-develops; the current portfolio does not exhaust the four areas.
+Production is part of the institution's mandate. Its first simulator supplies
+a bounded architecture for configured productive units, independently of any
+industry. Recording work, output and compensation obligations does not establish
+sustained production, funded pay or worker benefit. Broader exchange and allocation
+models can be studied as the program develops; the current portfolio does not
+exhaust the four areas.
 
 Reusable forecasting and optimization capabilities belong in `tools/`. Their
 technical evaluation remains independently useful. Forecast accuracy, solver

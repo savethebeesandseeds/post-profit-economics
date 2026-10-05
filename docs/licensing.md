@@ -14,7 +14,9 @@ identified in source headers as
 | Original files under `tools/price-optimization/`, including C++ code, AMPL model files, tests, and tool environment scripts | Worker Protection License 1.0 |
 | Inherited MIT environment code, dependency pins, and attribution notice in the optimizer | Explicit MIT portions retain MIT; new script modifications also require the worker-protection terms. See the [environment notice](../tools/price-optimization/environment/NOTICE.md) |
 | Independent MIT [post-profit-exchange application](../projects/post-profit-exchange/README.md) that calls the engine | Application stays MIT; using or hosting the engine still requires compliance with the engine license |
+| Independent [post-profit-production simulator](../projects/post-profit-production/README.md) | MIT application; uses the separately noticed MIT JSON header without linking pricing engine code |
 | Standalone exchange HTML containing compiled pricing code | Combined artifact includes Worker Protection engine terms, MIT application/JSON terms and compiler-runtime notices; it is not MIT-only. Corresponding source is embedded as a downloadable ZIP. No AMPL binary or entitlement is included. |
+| Standalone production HTML | MIT production application and JSON dependency, with compiler-runtime notices and corresponding source embedded. It contains no pricing engine or AMPL code. |
 | AMPL, its SDK, solver software, and other third-party material | Their own licenses; neither the root MIT license nor the worker-protection license grants rights to these products |
 
 The custom terms cover new original engine material and derivatives of that

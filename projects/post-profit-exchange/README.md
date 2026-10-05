@@ -81,10 +81,10 @@ comparisons. Configuration and persistent research records are ordinary local
 files, with no database. Operational integration and authenticated governance
 are later work.
 
-Factory and laboratory demonstrations would study **production** in separate
-projects under `projects/`, with their own operating specifications and tool
-integrations. They are outside this store project's scope; the production
-folder remains a placeholder.
+The separate [production project](../post-profit-production/README.md) studies
+configuration-driven resource transformations, labor, capacity, timelines and
+risk. Its initial synthetic simulator has its own operating specification;
+integration with this store remains future work.
 
 ## Standalone WebAssembly simulation
 
@@ -282,5 +282,5 @@ store to retain prior prices.
 6. Appropriate AMPL/solver rights for the actual operational deployment.
 
 Begin in shadow mode, measure projected versus realized costs and outcomes, then
-let workers approve a bounded pilot. Factory and laboratory projects may reuse
+let workers approve a bounded pilot. Configured productive units may reuse
 appropriate tools later, with their own scheduling, resource and safety models.

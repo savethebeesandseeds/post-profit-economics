@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+execute_process(COMMAND "${PROGRAM}" --example-config
+  RESULT_VARIABLE example_code OUTPUT_VARIABLE example ERROR_VARIABLE example_error)
+if(NOT example_code EQUAL 0)
+  message(FATAL_ERROR "Example configuration failed: ${example_error}")
+endif()
+file(READ "${CONFIG}" config_text)
+string(JSON example_canonical GET "${example}")
+string(JSON source_canonical GET "${config_text}")
+if(NOT example_canonical STREQUAL source_canonical)
+  message(FATAL_ERROR "Embedded and source configurations differ")
+endif()
+execute_process(COMMAND "${PROGRAM}" --config "${CONFIG}"
+  RESULT_VARIABLE run_code OUTPUT_VARIABLE run ERROR_VARIABLE run_error)
+if(NOT run_code EQUAL 0)
+  message(FATAL_ERROR "Configured run failed: ${run_error}")
+endif()
+string(JSON status GET "${run}" status)
+string(JSON settlement GET "${run}" summary compensation_settlement)
+if(NOT status STREQUAL "ok" OR NOT settlement STREQUAL "not_modeled")
+  message(FATAL_ERROR "Unexpected configured-run contract")
+endif()
+execute_process(COMMAND "${PROGRAM}" --config "${CONFIG}"
+  RESULT_VARIABLE replay_code OUTPUT_VARIABLE replay ERROR_VARIABLE replay_error)
+if(NOT replay_code EQUAL 0 OR NOT replay STREQUAL run)
+  message(FATAL_ERROR "CLI replay differs: ${replay_error}")
+endif()
+execute_process(COMMAND "${PROGRAM}" --unknown
+  RESULT_VARIABLE invalid_code OUTPUT_VARIABLE invalid_output ERROR_VARIABLE invalid_error)
+if(invalid_code EQUAL 0 OR NOT invalid_output STREQUAL "")
+  message(FATAL_ERROR "Invalid CLI arguments produced a run")
+endif()

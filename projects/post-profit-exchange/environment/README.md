@@ -1,14 +1,24 @@
 <!-- SPDX-License-Identifier: MIT -->
 # Exchange simulation build environment
 
-The standalone HTML runs locally without a server or installed compiler. Building
-it uses the already approved [optimizer Debian container](../../../tools/price-optimization/environment/README.md).
-This project creates no container, network listener, volume or additional mount.
+The standalone HTML runs locally without a server or installed compiler.
+Building uses the shared [GPU Debian environment](../../../docs/environment.md),
+`post-profit-economics-gpu`, immutable ID
+`d790ed5301151c20b084a703acf6f04472234deb7cd6fd2c8c5d0b218f46b40e`.
+The optimizer launcher forwards to its managed TFT launcher; no separate CPU
+container is created. Exchange adds no mount, volume, port or service.
 
-The existing container is `praesidium-humanitatis-price-optimization`, immutable
-ID `5738ae552c575e91e0d4308b8aa2c66aa170e8dd817282fd7abd5817907d3ff9`.
-Its approved Debian 12 image, `/bin/bash` command, repository bind mount,
-no ports/volumes/devices and restart policy `no` remain unchanged.
+The canonical checkout `C:\Work\post-profit-economics` binds directly to
+`/workspace/praesidium-humanitatis`. The recovered container preserves the
+installed CUDA environment and enables NVIDIA GPUs, with 1 GiB shared memory,
+no ports or named volumes, restart policy `no`, default bridge and no privileged
+mode. Exchange's native and WebAssembly code retain their existing CPU behavior.
+The CPU container, old TFT backup container and former host junction are gone.
+
+Python and Emscripten 4.0.15 were already installed or staged and were verified
+in the recovered container; no SDK installer was rerun during recovery.
+The following provisioning record applies only when dependencies need explicit
+restoration. Normal builds use the existing staged SDK.
 
 `setup-wasm.sh` installs only dependencies: Debian `python3=3.11.2-1+b1`
 with `--no-install-recommends`, and the official Emscripten SDK 4.0.15 into

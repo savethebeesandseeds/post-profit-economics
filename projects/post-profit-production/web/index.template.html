@@ -1,0 +1,91 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT; Copyright (c) 2026 Waajacu -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A configuration driven production research engine: resources, work, time and declared risk.">
+  __CSP__
+  __REVIEW_META__
+  <title>post-profit-production · research workbench</title>
+  <style>__STYLE__</style>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">p·p</span><div><p class="eyebrow">Praesidium Humanitatis / research engines</p><h1>post-profit-production</h1></div></div>
+    <p class="intro">A fabric of processes, resources and work.<br>Observe what happens under the assumptions you declare.</p>
+    <div class="header-note"><span class="status-dot" aria-hidden="true"></span>Synthetic research · local execution</div>
+  </header>
+
+  <main id="workspace">
+    <section class="workbench" aria-labelledby="workspace-heading">
+      <div class="section-heading"><div><p class="eyebrow">01 / Declare the system</p><h2 id="workspace-heading">Research workspace</h2></div><p class="section-note">The same C++ engine runs here through WebAssembly.</p></div>
+      <div class="mode-tabs" role="tablist" aria-label="Research workspace">
+        <button id="simulation-tab" type="button" role="tab" aria-controls="editor-panel" aria-selected="true" tabindex="0">Production run</button>
+        <button id="experiment-tab" type="button" role="tab" aria-controls="editor-panel" aria-selected="false" tabindex="-1">Scheduling comparison</button>
+      </div>
+      <div class="workspace-grid">
+        <div id="editor-panel" class="editor-panel" role="tabpanel" aria-labelledby="simulation-tab">
+          <div class="editor-heading"><label id="editor-label" for="config-editor">Production configuration</label><span class="tag" id="schema-label">production.config.v1</span></div>
+          <p id="editor-help" class="muted">Define resources, labor, capacity, process stages, jobs and risk in JSON. The engine validates the exact text.</p>
+          <textarea id="config-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="editor-help editor-state"></textarea>
+          <div class="editor-footer"><span id="editor-state" class="muted">Example configuration</span><span id="editor-bytes" class="muted"></span></div>
+          <div class="editor-tools">
+            <button id="load-input" type="button" class="quiet">Open configuration</button><input id="input-file" type="file" accept=".cfg,.json,application/json" class="visually-hidden" tabindex="-1">
+            <button id="export-input" type="button" class="quiet">Export configuration</button><button id="reset-input" type="button" class="quiet">Load example</button>
+          </div>
+          <div class="run-bar"><button id="run-button" type="button" class="primary">Run production</button><button id="cancel-button" type="button" disabled>Cancel</button><span id="run-status" role="status" aria-live="polite">Preparing the example…</span></div>
+          <p id="run-error" class="error-box" role="alert" hidden></p>
+        </div>
+        <aside class="declaration-panel" aria-labelledby="declaration-heading">
+          <p class="eyebrow">A general engine</p><h3 id="declaration-heading">Declare relationships.<br>Inspect consequences.</h3>
+          <div class="fabric-diagram" aria-label="Resources and available labor and capacity support process stages, which produce outputs over time"><span>Resources</span><span>Labor</span><span>Capacity</span><div class="fabric-process">Process stages <span class="fabric-arrow" aria-hidden="true">→</span> Outputs</div><p>Dependencies · retained progress · declared risk</p></div>
+          <p>Each job instantiates a process. Its stages draw on input stocks and available pools, then produce configured outputs. The timeline emerges from those constraints.</p>
+          <details open class="model-notes"><summary>What the model assumes</summary><ul><li>Inputs are consumed together at a feasible stage start. Outputs become available to other stages on the next tick.</li><li>Pauses retain work already completed. Available labor and capacity reset each tick.</li><li>FIFO and earliest deadline are greedy scheduling policies. They establish no optimum or fairness claim.</li><li>Risk probabilities are supplied assumptions and remain uncalibrated. A recorded reason is the first blocking condition.</li><li>Compensation accrues across the full horizon, including idle time and absence. Payment, funding, viability and governance are not modeled.</li></ul></details>
+          <div class="run-provenance"><h4>Recorded result</h4><p id="result-provenance" class="muted">The default example runs when this page opens. Editing an input preserves the last completed result until another run finishes.</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="experiment-section" class="panel" aria-labelledby="experiment-heading" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Verification before exploration</p><h2 id="experiment-heading">Scheduling observations</h2></div><span id="experiment-status" class="tag"></span></div>
+      <p id="experiment-description" class="muted"></p>
+      <div id="experiment-check-summary" class="check-summary"></div>
+      <p id="skipped-cases" class="error-box" hidden></p>
+      <div class="table-scroll"><table id="outcome-table"><caption>Completion and deadline observations · full sample denominators</caption><thead><tr><th scope="col">Case / phase</th><th scope="col">Policy</th><th scope="col">Job</th><th scope="col">Samples</th><th scope="col">Completed</th><th scope="col">Unfinished</th><th scope="col">Missed deadline</th><th scope="col">Completion frequencies</th></tr></thead><tbody></tbody></table></div>
+      <details class="check-details"><summary id="checks-heading">Verification and consistency checks</summary><div class="table-scroll"><table id="checks-table"><caption>Every recorded check, including failed expectations</caption><thead><tr><th scope="col">Kind</th><th scope="col">Case / pair</th><th scope="col">Policy / seed</th><th scope="col">Outcome</th><th scope="col">Details</th></tr></thead><tbody></tbody></table></div></details>
+      <div class="run-picker"><label for="experiment-run">Inspect a recorded run</label><select id="experiment-run"></select><span id="run-expectation" class="muted"></span></div>
+      <ul id="experiment-interpretation" class="interpretation"></ul>
+    </section>
+
+    <section id="results-section" class="panel" aria-labelledby="results-heading" hidden>
+      <div class="section-heading"><div><p class="eyebrow">02 / Observe the full horizon</p><h2 id="results-heading">Production observations</h2></div><div class="result-actions"><button id="export-result" type="button" class="quiet">Export result JSON</button><button id="export-run-input" type="button" class="quiet">Export recorded input</button></div></div>
+      <p id="result-context" class="muted"></p>
+      <div id="summary-metrics" class="metrics"></div>
+      <p class="accounting-note">Compensation due is an obligation in declared currency minor units; no decimal scale is inferred. Settlement: <strong>not modeled</strong>. Completion records do not establish output sufficiency, worker benefit or economic viability.</p>
+      <div class="table-scroll"><table id="job-table"><caption>Jobs at the end of the horizon</caption><thead><tr><th scope="col">Job / process</th><th scope="col">Release</th><th scope="col">Deadline</th><th scope="col">Completion</th><th scope="col">Status</th><th scope="col">Missed deadline</th></tr></thead><tbody></tbody></table></div>
+
+      <div class="observation-heading"><h3>Recorded timeline</h3><label for="timeline-job">Stages to inspect <select id="timeline-job"></select></label></div>
+      <p id="timeline-note" class="muted">Select a tick on the timeline or use the recorded tick controls below.</p>
+      <div class="timeline-legend" aria-label="Stage timeline legend"><span><i class="legend-swatch work" aria-hidden="true"></i>Progress</span><span><i class="legend-swatch pause" aria-hidden="true"></i>Started, no progress</span><span><i class="legend-swatch wait" aria-hidden="true"></i>Waiting to start</span><span><i class="legend-swatch unreleased" aria-hidden="true"></i>Unreleased</span><span><i class="legend-swatch complete" aria-hidden="true"></i>Already completed</span></div>
+      <div id="timeline-container" class="chart-scroll"></div>
+
+      <div class="tick-controls"><button id="tick-back" type="button" aria-label="Previous recorded tick">←</button><button id="play-button" type="button">Play ticks</button><button id="tick-forward" type="button" aria-label="Next recorded tick">→</button><label for="tick-slider">Recorded tick <strong id="tick-label"></strong></label><input id="tick-slider" type="range" min="1" max="1" value="1" step="1"></div>
+      <p class="muted small">Playback reads completed records. It does not rerun the engine or change the horizon.</p>
+      <div class="tick-heading"><h3 id="tick-heading">Tick detail</h3><span id="tick-compensation" class="tag"></span></div>
+      <div class="table-scroll"><table id="stage-table"><caption>Stage work and the first recorded condition at this tick</caption><thead><tr><th scope="col">Job / stage</th><th scope="col">Work this tick</th><th scope="col">Completed / required</th><th scope="col">Status</th><th scope="col">Recorded condition</th><th scope="col">Start / completion</th></tr></thead><tbody></tbody></table></div>
+      <div class="detail-grid"><div><div class="chart-heading"><h3>Closing resource stock</h3><select id="resource-chart-select" aria-label="Resource to chart"></select></div><div id="resource-chart" class="series-chart"></div><div class="table-scroll"><table id="stock-table"><caption>Closing stocks at this tick · each resource retains its own unit</caption><thead><tr><th scope="col">Resource</th><th scope="col">Declared unit</th><th scope="col">Stock</th></tr></thead><tbody></tbody></table></div></div><div><div class="chart-heading"><h3>Available and used pools</h3><select id="pool-chart-select" aria-label="Pool to chart"></select></div><div id="pool-chart" class="series-chart"></div><div class="table-scroll"><table id="pool-table"><caption>Pool availability and use at this tick</caption><thead><tr><th scope="col">Pool / kind</th><th scope="col">Declared unit</th><th scope="col">Available</th><th scope="col">Used</th><th scope="col">Compensation due</th></tr></thead><tbody></tbody></table></div></div></div>
+      <details id="tick-events" class="event-details" open><summary id="event-heading">Events at this tick</summary><div id="event-list"></div></details>
+      <details class="accounting-details"><summary>Full horizon resource accounting</summary><div class="table-scroll"><table id="resource-ledger"><caption>Closing = opening + produced − consumed − lost. Unrealized output is separate from stock loss.</caption><thead><tr><th scope="col">Resource / unit</th><th scope="col">Opening</th><th scope="col">Produced</th><th scope="col">Consumed</th><th scope="col">Lost</th><th scope="col">Closing</th><th scope="col">Unrealized output</th></tr></thead><tbody></tbody></table></div></details>
+      <details class="inventory-details"><summary>Validated system inventory and process definitions</summary><div id="validated-inventory"></div></details>
+    </section>
+
+    <footer><p>Post-profit-production is a research model. The engine records consequences of declared constraints and synthetic risks; empirical adequacy, consent and compensation settlement require separate work.</p><details><summary>Source and licenses</summary><div class="license-content">__LICENSES__</div></details></footer>
+  </main>
+  <script type="text/plain" id="production-runtime">__RUNTIME__</script>
+  <script type="application/json" id="default-config">__DEFAULT_CONFIG__</script>
+  <script type="application/json" id="default-plan">__DEFAULT_PLAN__</script>
+  <script id="production-app">__APP__</script>
+</body>
+</html>

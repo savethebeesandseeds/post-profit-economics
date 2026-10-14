@@ -1,6 +1,6 @@
 # Shared GPU development environment
 
-TFT, price optimization, production and exchange use one managed container:
+TFT, price optimization, production and exchange share a managed development container:
 `post-profit-economics-gpu`. On 2026-10-05, the user requested recovery from the
 installed TFT backup, removal of the CPU container, and deletion of the backup
 after verification. The recovery preserved the installed CUDA environment;
@@ -29,7 +29,10 @@ The snapshot came from the stopped container
 `fb76bcc496b41c383fd4363cb5c2af15a877076beb4254d2af957dab6eba4b24`, formerly
 `praesidium-humanitatis-tft-before-path-migration`. That backup and
 `post-profit-economics-cpu` have now been deleted by explicit user instruction.
-Only the GPU container remains for this project. The old Windows paths
+That recovery left the GPU container for shared development. Exchange now also
+has a separately authorized [per-operation application launcher](../projects/post-profit-exchange/doc/APPLICATION_SERVICE.md)
+for isolated vendor environments. It does not replace this general development
+container. The old Windows paths
 `C:\Work\praesidium-humanitatis` and `C:\Work\Ad-humanitatem` are absent.
 
 The local image manifest is `.build/environment/gpu-recovery.json`. The launcher

@@ -42,7 +42,7 @@ The caller must supply records in chronological order and determine whether
 they were genuinely available at the forecast's origin. Days need not be
 consecutive; missing days do not become zero observations.
 
-`post-profit-exchange/simulation/models.*` is the application adapter. It owns
+`post-profit-exchange/code/models.*` is the application adapter. It owns
 JSON parsing, model selection, sales/stock validation and conservative stockout
 censoring. The exchange owns product price-response assumptions, `.cfg` files,
 record provenance, reserve scheduling, and assurance policy. The tool receives

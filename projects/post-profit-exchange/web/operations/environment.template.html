@@ -1,0 +1,172 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Post-profit-exchange · Environment snapshot</title>
+<style>
+:root{color-scheme:light;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#292a22;background:#f4f0e6}
+*{box-sizing:border-box}body{margin:0}header,section,footer{padding:1.1rem max(1.2rem,calc((100vw - 1120px)/2))}header{background:#d9dfcf}section{border-top:1px solid #aca994;background:#f4f0e6}section:nth-of-type(even){background:#e9e1d1}footer{background:#d9dfcf;font-size:.88rem}h1{font-size:1.55rem;margin:.15rem 0 .4rem}h2{font-size:1.1rem;margin:0 0 .6rem}h3{font-size:1rem;margin:.9rem 0 .35rem}p{margin:.35rem 0}.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}.muted,.help{color:#535747;font-size:.9rem}.metadata{display:flex;flex-wrap:wrap;gap:.35rem 1.5rem;margin:.6rem 0}dl{margin:0}.accounts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border-top:1px solid #aca994;border-left:1px solid #aca994}.accounts>div{padding:.7rem;border-bottom:1px solid #aca994;border-right:1px solid #aca994}dt{font-size:.9rem}dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.accounts dd{font-size:1.15rem;font-weight:650}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.8rem 0 .3rem}button{background:#4b5945;color:#fff;border:1px solid #4b5945;padding:.45rem .8rem;border-radius:0;font:inherit;cursor:pointer}button:disabled{background:#74796c;cursor:default}button:focus-visible,summary:focus-visible{outline:3px solid #854c2e;outline-offset:3px}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.94rem}th,td{padding:.45rem .5rem;text-align:left;border-bottom:1px solid #b5b19f;vertical-align:top;overflow-wrap:anywhere}th{background:#dcd7c6;font-weight:650}.number{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}code,pre{font: .86rem/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}pre{background:#e0e3d6;border:1px solid #aca994;padding:.8rem;overflow:auto;max-height:28rem;white-space:pre-wrap;overflow-wrap:anywhere}summary{cursor:pointer;font-weight:600}details+details{margin-top:.8rem}.status{font-weight:600}#error{background:#e8d2bd;padding:1rem}[hidden]{display:none!important}@media print{button{display:none}header,section,footer{padding:.7rem}body{font-size:11pt}pre{max-height:none}table{font-size:10pt}}
+</style>
+</head>
+<body>
+<header>
+<p class="eyebrow">Post-profit-exchange · Operation environment</p>
+<h1 id="display-name">Environment snapshot</h1>
+<p id="description"></p>
+<div class="metadata"><span id="provenance" class="status"></span><span id="database-status"></span><span id="environment-id"></span></div>
+<p><strong>Static snapshot loaded from IdyDB.</strong> This file shows saved recorded accounts. Refreshing this page does not reread the database; run the native environment renderer again to obtain a new snapshot.</p>
+<p class="muted"><span id="as-of"></span> <span id="snapshot-at"></span></p>
+<div class="actions"><button id="print" type="button" disabled>Print snapshot</button><button id="download" type="button" disabled>Download snapshot JSON</button></div>
+<p id="error" role="alert" hidden></p>
+</header>
+<main id="content" hidden>
+<section aria-labelledby="accounts-heading">
+<h2 id="accounts-heading">Recorded accounts</h2>
+<p class="help">Amounts use the configured currency. Reserve is part of cash, not an additional account. These are recorded balances, not forecasts or recommended prices.</p>
+<dl class="accounts">
+<div><dt>Cash</dt><dd id="cash"></dd></div>
+<div><dt>Reserve within cash</dt><dd id="reserve"></dd></div>
+<div><dt>Earned funding balance</dt><dd id="earned-funding"></dd></div>
+<div><dt>Inventory at acquisition cost</dt><dd id="inventory-value"></dd></div>
+<div><dt>Outstanding obligations</dt><dd id="obligations-total"></dd></div>
+<div><dt>Cash excluding reserve</dt><dd id="cash-unreserved"></dd></div>
+<div><dt>Cash after obligations and reserve</dt><dd id="cash-after-obligations"></dd></div>
+<div><dt>Net assets</dt><dd id="net-assets"></dd></div>
+</dl>
+<p class="help">Net assets = cash + inventory acquisition value − outstanding obligations. A negative cash remainder shows a shortfall against the recorded obligations and reserve. Earned funding is a separate policy balance; it is not additional cash.</p>
+</section>
+<section aria-labelledby="products-heading">
+<h2 id="products-heading">Products and current public prices</h2>
+<p id="inventory-units" class="help"></p>
+<div class="table-scroll"><table><thead><tr><th scope="col">Product</th><th scope="col">SKU</th><th scope="col">Unit</th><th scope="col" class="number">Public price / unit</th><th scope="col" class="number">Replacement cost / unit</th></tr></thead><tbody id="products"></tbody></table></div>
+<h3>Stock by acquisition lot</h3>
+<p class="help">Acquisition cost is what was paid for this lot. Replacement cost is the current recorded cost of obtaining another unit. Public prices are saved values; this snapshot does not calculate a new price.</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">SKU</th><th scope="col">Lot</th><th scope="col" class="number">Units</th><th scope="col" class="number">Acquisition cost / unit</th></tr></thead><tbody id="lots"></tbody></table></div>
+</section>
+<section aria-labelledby="obligations-heading">
+<h2 id="obligations-heading">Outstanding obligations</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Record</th><th scope="col">Kind</th><th scope="col" class="number">Amount</th></tr></thead><tbody id="obligations"></tbody></table></div>
+</section>
+<section aria-labelledby="capabilities-heading">
+<h2 id="capabilities-heading">Current checkpoint</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Application capability</th><th scope="col">Status</th></tr></thead><tbody id="capabilities"></tbody></table></div>
+<p class="help">This saved inspector is read-only. Use the connected application to record deliveries, sales and new expenses. Price approval and publication remain unavailable. The environment supplies configuration and records; the shared exchange application supplies their meaning and presentation.</p>
+</section>
+<section aria-labelledby="records-heading">
+<h2 id="records-heading">Configuration and records</h2>
+<p class="help">The environment configuration identifies its database and input records. JSON downloads contain this snapshot, including its records; they are not a database backup.</p>
+<details><summary>Environment configuration</summary><pre id="configuration"></pre></details>
+<details><summary>Presentation metadata</summary><pre id="metadata"></pre></details>
+<details><summary>Complete snapshot record</summary><pre id="raw-record"></pre></details>
+</section>
+</main>
+<footer>Post-profit-exchange research application · No external assets or network connection required by this snapshot.</footer>
+<script id="environment-data" type="application/json">__ENVIRONMENT_JSON__</script>
+<script>
+"use strict";
+(() => {
+  const byId = id => document.getElementById(id);
+  const set = (id, value) => { byId(id).textContent = String(value); };
+  const row = (target, cells) => {
+    const tr = document.createElement("tr");
+    cells.forEach(cell => {
+      const td = document.createElement("td");
+      td.textContent = String(typeof cell === "object" ? cell.text : cell);
+      if (typeof cell === "object" && cell.number) td.className = "number";
+      tr.appendChild(td);
+    });
+    byId(target).appendChild(tr);
+  };
+  const empty = (target, columns, message) => {
+    const tr = document.createElement("tr"), td = document.createElement("td");
+    td.colSpan = columns; td.textContent = message;
+    tr.appendChild(td); byId(target).appendChild(tr);
+  };
+  try {
+    const report = JSON.parse(byId("environment-data").textContent);
+    if (report.schema_version !== "exchange.environment-view.v1" ||
+        report.environment?.schema_version !== "exchange.environment.v1" ||
+        report.metadata?.schema_version !== "exchange.environment-metadata.v1" ||
+        report.state?.schema_version !== "exchange.opening.v1" ||
+        report.environment.minor_unit_digits !== 2 ||
+        report.environment.environment_id !== report.state.environment_id ||
+        !["synthetic", "observed"].includes(report.metadata.provenance) ||
+        report.database?.backend !== "idydb" || report.database.status !== "loaded") {
+      throw new Error("Unsupported or inconsistent environment snapshot.");
+    }
+    const {environment, metadata, state, summary, capabilities} = report;
+    const integer = value => {
+      if (!Number.isSafeInteger(value)) throw new Error("Snapshot contains an invalid integer amount or count.");
+      return BigInt(value);
+    };
+    const money = value => {
+      const amount = integer(value), absolute = amount < 0n ? -amount : amount;
+      return (amount < 0n ? "−" : "") + (absolute / 100n).toLocaleString("en-US") +
+        "." + (absolute % 100n).toString().padStart(2, "0") + " " + environment.currency;
+    };
+    const numeric = text => ({text, number: true});
+    set("display-name", metadata.display_name);
+    document.title = metadata.display_name + " · Exchange environment snapshot";
+    set("description", metadata.description);
+    set("provenance", metadata.provenance === "synthetic" ? "Synthetic example records" : "Observed records");
+    set("database-status", "IdyDB · saved state loaded");
+    set("environment-id", "Environment: " + environment.environment_id);
+    set("as-of", "Accounts as of " + state.as_of + ".");
+    set("snapshot-at", "Snapshot rendered " + report.snapshot_at + ".");
+    for (const [id, value] of [
+      ["cash", state.cash], ["reserve", state.reserve], ["earned-funding", state.earned_funding],
+      ["inventory-value", summary.inventory_value], ["obligations-total", summary.obligations],
+      ["cash-unreserved", summary.cash_unreserved], ["cash-after-obligations", summary.cash_after_obligations_and_reserve],
+      ["net-assets", summary.net_assets]
+    ]) set(id, money(value));
+    set("inventory-units", integer(summary.inventory_units).toLocaleString("en-US") + " units in saved stock.");
+    const labels = new Map(metadata.products.map(product => [product.sku, product]));
+    let lotCount = 0;
+    for (const product of state.products) {
+      const label = labels.get(product.sku);
+      if (!label) throw new Error("Product metadata is missing for a saved SKU.");
+      row("products", [label.label, product.sku, label.unit, numeric(money(product.published_price)), numeric(money(product.replacement_cost))]);
+      for (const lot of product.lots) {
+        row("lots", [product.sku, lot.id, numeric(integer(lot.units).toLocaleString("en-US")), numeric(money(lot.unit_cost))]);
+        lotCount++;
+      }
+    }
+    if (!state.products.length) empty("products", 5, "No products recorded.");
+    if (!lotCount) empty("lots", 4, "No acquisition lots recorded.");
+    for (const obligation of state.obligations) {
+      row("obligations", [obligation.id, obligation.kind === "wages" ? "Worker pay" : "Operating expense", numeric(money(obligation.amount))]);
+    }
+    if (!state.obligations.length) empty("obligations", 3, "No outstanding obligations recorded.");
+    for (const [key, label] of [["opening_state", "Load and inspect opening accounts"], ["transactions", "Record ongoing transactions"],
+      ["price_recommendations", "Recommend prices"], ["price_publication", "Publish approved prices"]]) {
+      if (typeof capabilities[key] !== "boolean") throw new Error("Snapshot capability status is missing.");
+      row("capabilities", [label, capabilities[key] ? "Available in application" : "Not implemented"]);
+    }
+    set("configuration", JSON.stringify(environment, null, 2));
+    set("metadata", JSON.stringify(metadata, null, 2));
+    set("raw-record", JSON.stringify(report, null, 2));
+    byId("print").addEventListener("click", () => window.print());
+    byId("download").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(report, null, 2) + "\n"], {type: "application/json"});
+      const url = URL.createObjectURL(blob), link = document.createElement("a");
+      link.href = url;
+      link.download = "exchange-environment-snapshot.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
+    byId("content").hidden = false;
+    byId("print").disabled = false;
+    byId("download").disabled = false;
+  } catch (error) {
+    set("error", "Cannot display this snapshot: " + error.message);
+    byId("error").hidden = false;
+  }
+})();
+</script>
+</body>
+</html>

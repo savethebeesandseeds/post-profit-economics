@@ -59,7 +59,7 @@ The web build uses the same managed container, with the already staged official
 Emscripten **4.0.15** SDK at `.build/deps/emsdk-4.0.15`. Its compiler commit is
 `09f52557f0d48b65b8c724853ed8f4e8bf80e669`, bundled Node is **22.16.0**, and the
 container's Python is **3.11.2**. SDK provenance and dependency-only provisioning
-are recorded in the [exchange environment guide](../../post-profit-exchange/environment/README.md).
+are recorded in the [exchange environment guide](../../post-profit-exchange/doc/ENVIRONMENT.md).
 Production adds no setup script, dependency installation or service. If the SDK
 is absent, follow that documented procedure in the same container.
 

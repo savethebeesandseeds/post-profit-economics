@@ -9,6 +9,7 @@ identified in source headers as
 | Material | Terms |
 | --- | --- |
 | Repository documentation, shared infrastructure, and application projects | MIT unless a specific file identifies another license |
+| IdyDB source snapshot under `tools/idydb/upstream/` | MIT, copyright (c) 2025 Waajacu; original license and attribution retained. Local integration material uses the repository MIT license |
 | Simple exponential smoothing tool under `tools/exponential-smoothing/`, including the extracted EWMA implementation | MIT; independent of the restricted pricing engine |
 | Temporal Fusion Transformer tool, including its existing implementation | MIT; upstream dependencies keep their own terms |
 | Original files under `tools/price-optimization/`, including C++ code, AMPL model files, tests, and tool environment scripts | Worker Protection License 1.0 |

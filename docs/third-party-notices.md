@@ -5,6 +5,17 @@ explicit exception under its own worker-protection license. See
 [license boundaries](licensing.md). Dependencies have separate licenses;
 neither project license replaces them.
 
+- IdyDB: MIT working-tree source snapshot from `C:\Work\idydb`, based on commit
+  `7912afd007734adb08b018a18e3808131b3c3108` with uncommitted shared revisions,
+  copyright (c) 2025 Waajacu.
+  The original FlitDB attribution is retained. See its
+  [license](../tools/idydb/upstream/LICENSE),
+  [provenance](../tools/idydb/PROVENANCE.md) and
+  [experimental adoption review](../tools/idydb/REVIEW.md).
+  OpenSSL is a separately supplied dependency for all current IdyDB builds;
+  preserve its installed distribution's license and notices when redistributing
+  it. No OpenSSL binary is vendored here.
+
 - nlohmann/json 3.12.0: vendored under MIT in the optimizer's
   `third_party/nlohmann/` directory, expressly excluded from its custom license.
   The production simulator also references this header without linking the
@@ -16,7 +27,7 @@ neither project license replaces them.
   runtime. Its MIT runtime notice and the bundled LLVM C/C++/compiler-rt,
   libunwind and musl notices are embedded in the standalone HTML and its source
   archive. The compiler SDK remains ignored local build data. See the
-  [pinned build provenance](../projects/post-profit-exchange/environment/README.md).
+  [pinned build provenance](../projects/post-profit-exchange/doc/ENVIRONMENT.md).
 
 - AMPL interpreter, C++ API/SDK, and AMPL solver drivers: separately supplied
   vendor components governed by the applicable [AMPL agreement](https://ampl.com/terms-eula/).

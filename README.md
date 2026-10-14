@@ -10,6 +10,14 @@ The Windows checkout is `C:\Work\post-profit-economics`; the old folder and
 junction have been removed. Development uses the shared NVIDIA GPU container
 `post-profit-economics-gpu`. See the [environment guide](docs/environment.md).
 
+The repository is organized into three directories:
+
+| Directory | Contents |
+| --- | --- |
+| [`projects/`](projects/README.md) | Economic demonstrations and the planned world/environment twin |
+| [`docs/`](docs/README.md) | Shared research, development, licensing and verification records |
+| [`tools/`](tools/README.md) | Reusable forecasting, optimization and experimental storage capabilities |
+
 We investigate how economic activity can meet human needs, reduce suffering
 and sustain the people and resources on which it depends. In this program,
 post-profit models exclude passive-owner profit extraction. Worker
@@ -52,8 +60,11 @@ funding worker pay, necessary costs and worker-controlled surplus.
 
 ## Tools
 
+The [tools index](tools/README.md) describes component boundaries and development.
+
 | Tool | Purpose | License | Status |
 | --- | --- | --- | --- |
+| [IdyDB](tools/idydb/README.md) | C/C++ cell and vector storage with optional encrypted backing files | [MIT](tools/idydb/upstream/LICENSE) | Optional experimental source; shared corrections and regression tests included; operational validation remains incomplete |
 | [Exponential smoothing (EWMA)](tools/exponential-smoothing/README.md) | Dependency-free C++17 simple exponential smoothing, uncertainty and past-only diagnostics | [MIT](tools/exponential-smoothing/LICENSE) | Nonseasonal single-level baseline used by exchange; empirical accuracy remains unvalidated |
 | [Temporal Fusion Transformer](tools/temporal-fusion-transformer/README.md) | C++17 / LibTorch / CUDA forecasting with model diagnostics | [MIT](tools/temporal-fusion-transformer/LICENSE) | Implemented; real-data replication remains a gate |
 | [Price optimization](tools/price-optimization/README.md) | C++17 pricing constraints and AMPL mixed-integer optimization | [Worker Protection License 1.0](tools/price-optimization/LICENSE) | Initial synthetic prototype; operational AMPL rights and store integration required |
@@ -72,7 +83,7 @@ research demonstration centered on **exchange** through public pricing, with
 **distribution** through stock and procurement and **allocation** through
 inventory, protected budgets and worker-governed surplus. Its scope includes
 stock, procurement, sales, accounts and worker benefit. A
-[standalone C++/WebAssembly simulator](projects/post-profit-exchange/dist/post-profit-exchange.html)
+[standalone C++/WebAssembly simulator](projects/post-profit-exchange/web/dist/post-profit-exchange.html)
 provides plain controls, charts and reconciled accounts. Live integration and
 evaluation with observed operating data remain future work.
 
@@ -97,15 +108,13 @@ A [supervised JSON backend](tools/price-optimization/docs/backend.md) now expose
 the existing optimizer for the synthetic dashboard example, with versioned
 inputs, process deadlines/cancellation and independently checked explanations.
 
-## Tycoon simulation engine
+## Tycoon world/environment twin
 
-[`simulation/`](simulation/README.md) is the home for our own tycoon engine:
-a visual world connecting workplaces, stores, households and supply routes
-to the post-profit-economic models. It will own the shared world, rendering,
-time controls and inspection, while projects define the economic rules.
-The initial design starts with replaying the existing store simulation on a
-small map; a runnable graphical engine and interactive world-building are
-future work.
+[`post-profit-tycoon`](projects/post-profit-tycoon/README.md) is a planned
+world/environment twin representing people, workplaces, stores, resources and
+supply routes. It is a separate project, currently a concept note only.
+Exchange and production keep their own operating models; future connections
+require specific interfaces. No twin, renderer or adapters are implemented.
 
 ## Build and environments
 
@@ -145,22 +154,30 @@ Existing build artifacts are preserved; canonical TFT builds use
 ## Layout
 
 ```text
-LICENSE                              MIT default, with explicit tool exceptions
-tools/
-  exponential-smoothing/             MIT simple exponential smoothing and tests; no model-training data
-  temporal-fusion-transformer/        MIT forecasting library, tests, environment
-  price-optimization/                 restricted engine, AMPL model, tests, environment
 projects/
-  post-profit-exchange/               store simulation, specification, standalone HTML (MIT application)
-  post-profit-distribution/           preserved research placeholder
-  post-profit-production/             configured production simulator, experiments, standalone web view
-  post-profit-allocation/             research placeholder
-  post-profit-assurance/              continuity-support contract placeholder; no funded payouts
-simulation/                          shared tycoon engine; initial design and integration plan
-docs/                                institutional framework, research, validation, licensing
-.build/                              ignored dependencies, results, build outputs
-.temp/                               ignored downloads and local working files
+  post-profit-exchange/         store model, doc/, code/ and standalone web/ simulator
+  post-profit-production/       production simulator, experiments and standalone web view
+  post-profit-distribution/     research placeholder
+  post-profit-allocation/       research placeholder
+  post-profit-assurance/        continuity-support contract placeholder; no funded payouts
+  post-profit-tycoon/           world/environment twin; concept note only
+docs/                          shared research, development, licensing and evidence
+tools/
+  idydb/                      MIT experimental cell/vector database; optional build
+  exponential-smoothing/       MIT simple exponential smoothing and tests
+  temporal-fusion-transformer/ MIT forecasting library, tests and environment
+  price-optimization/          restricted pricing engine, tests and environment
+README.md                      repository overview and navigation
+LICENSE                        MIT default, with explicit tool exceptions
+CMakeLists.txt                 optional aggregate build entry
+.gitignore                     local artifacts, generated runs and entitlement files
+.gitattributes                 text and line-ending rules
 ```
+
+Ignored local directories `.build/`, `.temp/` and `.codex/` sit outside this
+source layout. Existing dependencies, outputs and historical evidence are
+preserved; generated exchange runs are also ignored. Standalone HTML releases
+and research fixtures remain versioned.
 
 The TFT's existing [verification record](docs/verification.md),
 [uncertainty study](docs/uncertainty-validation.md),

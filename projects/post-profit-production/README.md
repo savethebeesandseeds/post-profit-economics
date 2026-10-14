@@ -127,11 +127,11 @@ funded operation or worker benefit.
 ## Repository boundaries and build
 
 This project owns production processes, scheduling, risk assumptions, domain
-state and records. The shared [tycoon engine](../../simulation/README.md) owns
-future rendering, interaction and world composition. Production and exchange
-remain independently runnable, with separate operating rules. An eventual
-adapter must explicitly reconcile units, clocks, resource transfers and
-settlement before connecting them.
+state and records. The planned [tycoon world/environment twin](../post-profit-tycoon/README.md)
+is a separate project; its environmental representation, rendering and
+interaction are future work. Production and exchange remain independently
+runnable, with separate operating rules. Any future connection must explicitly
+reconcile units, clocks, resource transfers and settlement.
 
 The simulator uses the repository's existing unmodified MIT `nlohmann/json`
 header; it links no pricing, forecasting, AMPL, LibTorch or CUDA library.

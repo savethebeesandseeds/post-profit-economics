@@ -1,0 +1,18 @@
+{
+  "schema_version": "exchange.environment-metadata.v1",
+  "display_name": "Vendor operation — example exchange",
+  "description": "Synthetic opening records for inspecting an exchange environment. These are example amounts, not observed trading or a proposed worker salary.",
+  "provenance": "synthetic",
+  "products": [
+    {
+      "sku": "bread",
+      "label": "Bread",
+      "unit": "piece"
+    },
+    {
+      "sku": "beans",
+      "label": "Beans",
+      "unit": "piece"
+    }
+  ]
+}

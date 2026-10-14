@@ -139,7 +139,7 @@ later evidence requirements.
 The [store project](../projects/post-profit-exchange/README.md) researches
 whether a worker-governed store can maintain access to goods,
 protected compensation and operational continuity without passive-owner profit
-extraction. Its [specification](../projects/post-profit-exchange/STORE_SPECIFICATION.md)
+extraction. Its [specification](../projects/post-profit-exchange/doc/STORE_SPECIFICATION.md)
 defines the proposed operating model and simulator acceptance criteria.
 
 The standalone simulator implements reconciled inventory, economic and cash

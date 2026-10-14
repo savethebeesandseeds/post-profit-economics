@@ -1,10 +1,21 @@
+# Local dependencies, build outputs, evidence and temporary files.
 /.build/
 /.temp/
-/projects/post-profit-exchange/runs/
+/.codex/
+
+# Generated exchange records; configuration and history fixtures are versioned.
+/projects/post-profit-exchange/code/runs/
+
+# Python caches.
 __pycache__/
 *.py[cod]
+
+# Local editor and operating-system files.
 *.user
 .DS_Store
+Thumbs.db
+Desktop.ini
+
 # Vendor entitlements must never be committed.
 ampl.lic
 ampl.lic.*

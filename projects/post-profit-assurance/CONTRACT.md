@@ -100,8 +100,8 @@ because a model produced it. Any implemented transfer would need an authorized
 settlement record and reconciled receipts, distinguishable from this request
 schema, before exchange cash or liabilities could change.
 
-Preserve the [exchange file records](../post-profit-exchange/docs/FILES.md),
-[simulator contract](../post-profit-exchange/simulation/CONTRACT.md) and
-[forecast assumptions](../post-profit-exchange/docs/MODELS.md) with research
+Preserve the [exchange file records](../post-profit-exchange/doc/FILES.md),
+[simulator contract](../post-profit-exchange/doc/CONTRACT.md) and
+[forecast assumptions](../post-profit-exchange/doc/MODELS.md) with research
 comparisons. The current interface establishes a traceable research handoff;
 it does not establish funded protection or real-world effectiveness.

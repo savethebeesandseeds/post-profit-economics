@@ -16,14 +16,14 @@ The old folder and junction are gone. One shared recovered NVIDIA GPU container,
 `post-profit-economics-gpu`, uses the canonical checkout directly. See the
 [environment record](environment.md) for its current configuration.
 
-`projects/` contains research demonstrations of those models. `tools/` contains
-reusable technical capabilities with independent validation and explicit
-licenses. [`simulation/`](../simulation/README.md) is the home for a shared
-tycoon engine that composes project models into an inspectable visual world;
-it is currently at the initial design stage. Project-specific simulation rules
-and accounts remain with their projects. `docs/` contains the institutional
-framework, research plans and evidence records. A tool's technical success and a demonstration's economic
-or human outcomes remain separate claims.
+`projects/` contains research demonstrations and the planned
+[tycoon world/environment twin](../projects/post-profit-tycoon/README.md).
+The twin is a separate project, currently a concept note only. Economic
+operating rules and accounts remain with their respective projects.
+`tools/` contains reusable technical capabilities with independent validation
+and explicit licenses. `docs/` contains the institutional framework, research
+plans and evidence records. A tool's technical success and a demonstration's
+economic or human outcomes remain separate claims.
 
 The store is an exchange demonstration with distribution and allocation
 mechanisms.
@@ -33,6 +33,31 @@ runner and independent offline WebAssembly view. It remains
 project-owned; funded operation and empirical production models are future work. The
 institutional framing preserves the existing implementation, licenses and
 validation records.
+
+## Root layout, 2026-10-14
+
+The repository has three source and documentation directories:
+
+- [`projects/`](../projects/README.md): economic demonstrations, their
+  specifications, interfaces and application code, and the planned environment
+  twin.
+- [`docs/`](README.md): repository-wide research, environment, licensing and
+  verification records.
+- [`tools/`](../tools/README.md): reusable technical capabilities and their
+  contracts, dependencies and validation.
+
+The tycoon concept note lives in `projects/post-profit-tycoon/`, replacing the
+former root `simulation/` directory. It describes the intended world/environment
+twin. Project-specific simulators stay with their projects, and the abandoned
+shared economic operating framework remains removed. Directory indexes and
+references use the project location.
+
+Root files provide navigation (`README.md`), licensing (`LICENSE`), the optional
+aggregate build (`CMakeLists.txt`) and Git rules (`.gitignore`, `.gitattributes`).
+Ignored `.build/` and `.temp/` retain existing local dependencies, outputs and
+historical evidence. `.codex/` is reserved for local agent state. Generated
+exchange runs are ignored at `projects/post-profit-exchange/code/runs/`;
+versioned fixtures and standalone HTML distributions remain visible to Git.
 
 ## Tool and application separation
 
@@ -71,7 +96,7 @@ single-level method rather than a general forecasting engine. It is pure C++17
 and requires neither JSON, the pricing engine,
 LibTorch nor CUDA. The application retains consumer generation, price-response
 normalization, stockout eligibility, JSON configuration and record adapters in
-`projects/post-profit-exchange/simulation/models.*`. Native and WebAssembly
+`projects/post-profit-exchange/code/models.*`. Native and WebAssembly
 exchange builds consume the same forecasting source. No new container is needed.
 
 TFT remains a separate candidate forecasting tool. There is no exchange adapter,
@@ -83,7 +108,7 @@ past-only comparisons against simpler methods on appropriate observed data.
 
 The [post-profit-exchange](../projects/post-profit-exchange/README.md) project is
 the store application; it does not claim a deployed autonomous store.
-Its [store specification](../projects/post-profit-exchange/STORE_SPECIFICATION.md)
+Its [store specification](../projects/post-profit-exchange/doc/STORE_SPECIFICATION.md)
 covers the intended operation: inventory, procurement, sales, accounts and
 worker benefit. Real-time price selection is one optimization decision within
 that operation. The standalone browser simulator compiles the shared pricing

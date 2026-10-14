@@ -1,0 +1,719 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Post-profit-exchange · Workspace</title>
+<style>
+:root{color-scheme:light;font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#30362d;background:#f6f3ea;--ink:#30362d;--muted:#65695b;--line:#c6c8b6;--olive:#46513a;--paper:#f6f3ea;--sand:#e9e1cd;--sage:#dfe5d5;--rust:#945333}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,a,input,select,summary{-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--rust);outline-offset:3px}button{cursor:pointer;border:1px solid var(--olive);border-radius:0;background:var(--olive);color:#fffdf6;padding:.65rem 1rem;font-weight:650;line-height:1.3}button:hover:not(:disabled){background:#35402b}button:disabled{opacity:.55;cursor:default}.secondary{background:transparent;color:var(--olive)}.secondary:hover:not(:disabled){background:#d6dccb}a{color:var(--olive)}p{margin:0 0 .6rem}h1,h2,h3{line-height:1.2;margin:0;font-weight:650}h1{font-size:clamp(1.15rem,2.4vw,1.65rem);letter-spacing:-.025em}h2{font-size:clamp(1.6rem,3vw,2rem);letter-spacing:-.04em}h3{font-size:1.04rem}small,.help{font-size:.86rem;color:var(--muted)}.eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 .45rem}.wrap{max-width:1216px;margin:auto;padding:0 2rem}.masthead{background:var(--olive);color:#fffdf3}.masthead .wrap{padding-top:1.15rem;padding-bottom:1.15rem;display:flex;gap:1rem;align-items:center;justify-content:space-between}.masthead .eyebrow{color:#d6dfc8}.badge{display:inline-block;padding:.35rem .55rem;font-size:.74rem;font-weight:650;letter-spacing:.025em;background:#e9dfbf;color:#3e4633;white-space:nowrap}.operation-id{font-size:.75rem;color:#e2e5d7;text-align:right;margin:.4rem 0 0}.navigation{background:#e5e8dc;border-bottom:1px solid var(--line)}.navigation .wrap{display:flex;gap:.3rem;overflow-x:auto}.navigation button{color:#59604d;border:0;border-bottom:3px solid transparent;background:transparent;padding:.9rem 1.1rem .75rem;font-size:.88rem;white-space:nowrap;font-weight:600}.navigation button:hover{background:#d9dfcf}.navigation button[aria-current="page"]{color:#293621;border-bottom-color:var(--olive);background:#d9dfcf}.navigation button:last-child{margin-left:auto}.connection{background:#eceee3;border-bottom:1px solid var(--line)}.connection .wrap{padding-top:.55rem;padding-bottom:.55rem;display:flex;gap:.5rem 1rem;align-items:center;justify-content:space-between}.connection p{margin:0;font-size:.8rem;color:#525c48}.connection button{font-size:.77rem;padding:.3rem .65rem;white-space:nowrap}.notice-area{background:var(--sand)}#error,#pending{padding:1rem 0;border-bottom:1px solid #c5b195}#error{color:#793c24;font-size:.9rem}#pending h2{font-size:1rem;letter-spacing:0;margin-bottom:.3rem}#pending-message{font-size:.9rem;overflow-wrap:anywhere}#pending button{background:#705934;border-color:#705934;margin:.3rem 0 .5rem}.page-intro{padding-top:1.6rem;padding-bottom:1.15rem}.page-intro p{margin:.45rem 0 0;font-size:.84rem;color:var(--muted)}#view-title:focus{outline:none}.band{border-top:1px solid var(--line)}.band>.wrap{padding-top:1.4rem;padding-bottom:1.4rem}.band.sage{background:var(--sage)}.band.sand{background:var(--sand)}.section-head{display:flex;gap:1rem;align-items:center;justify-content:space-between;margin-bottom:.85rem}.section-head p{margin:.3rem 0 0}.section-head button{font-size:.83rem;padding:.4rem .7rem}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-top:1px solid #b5bca8;border-bottom:1px solid #b5bca8}.metrics>div{padding:1.05rem 1.1rem;border-right:1px solid #b5bca8}.metrics>div:first-child{padding-left:0}.metrics>div:last-child{border-right:0}.metrics dt{font-size:.8rem;color:#4d5943;margin-bottom:.35rem}.metrics dd{margin:0;font-size:clamp(1.05rem,1.8vw,1.5rem);font-weight:650;letter-spacing:-.025em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.metrics small{display:block;margin-top:.35rem;font-size:.75rem}.metric-note{font-size:.77rem;color:#59624e;margin:.75rem 0 0}.quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #aaa78e}.quick-actions button{text-align:left;display:block;border:0;border-right:1px solid #aaa78e;padding:1rem 1.15rem;min-height:98px;background:transparent;color:var(--ink);font-size:1rem}.quick-actions button:last-child{border-right:0}.quick-actions button:first-child{background:var(--olive);color:#fffdf5}.quick-actions button:hover:not(:disabled){background:#ddd6bf}.quick-actions button:first-child:hover:not(:disabled){background:#35402b}.quick-actions span{display:block;font-size:.8rem;font-weight:400;margin-top:.35rem;color:#5d614f}.quick-actions button:first-child span{color:#e0e5d6}.quick-actions b{float:right;font-weight:400;font-size:1.1rem}.home-lower{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:2rem}.attention{border-left:1px solid var(--line);padding-left:1.5rem}.attention ul{margin:.8rem 0 0;padding-left:1.1rem;font-size:.86rem}.attention li+li{margin-top:.6rem}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{padding:.7rem .55rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}th{font-weight:600;color:#59614e;font-size:.76rem;background:#ececdf}th:first-child,td:first-child{padding-left:0}th:last-child,td:last-child{padding-right:0}.number{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}tbody tr:last-child td{border-bottom:0}td details{text-align:left;min-width:85px}td details pre{min-width:260px}.workflow-switch{display:flex;gap:0;margin-bottom:1.1rem;border-bottom:1px solid var(--line)}.workflow-switch button{background:transparent;color:var(--muted);border:0;border-bottom:3px solid transparent;padding:.6rem 1.2rem;font-size:.9rem}.workflow-switch button[aria-pressed="true"]{border-bottom-color:var(--olive);color:var(--olive);background:#e4e8db}.workflow-switch button:hover:not(:disabled){background:#e4e8db}.record-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(240px,1fr);gap:2rem}.record-aside{padding-left:1.5rem;border-left:1px solid var(--line)}.record-aside p{font-size:.84rem;margin:.7rem 0}.record-aside .help{font-size:.78rem}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.span-two{grid-column:1/-1}.date-field{max-width:220px;margin:1rem 0}.fields label,.date-field{display:block;font-size:.83rem;font-weight:600}.fields label small{display:block;font-size:.76rem;font-weight:400;margin-top:.3rem}input,select{display:block;width:100%;border:1px solid #909780;border-radius:0;background:#fffdf6;color:var(--ink);padding:.65rem;margin-top:.3rem;min-width:0;font-weight:400}input:disabled,select:disabled{background:#e8e8dc}fieldset{border:0;margin:0;padding:0;min-width:0}legend{font-size:1.02rem;font-weight:650;padding:0 0 1rem}details{font-size:.87rem}summary{cursor:pointer;font-weight:600;line-height:1.4}details[open]>summary{margin-bottom:.7rem}.form-details{margin:1rem 0}.form-details label{font-size:.83rem}.form-details p{font-size:.78rem;margin:.4rem 0 0}.form-submit{border-top:1px solid var(--line);padding-top:1rem;margin-top:1.3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}.form-submit p{margin:0;font-size:.83rem}#entry-preview{font-weight:650;font-size:1rem;line-height:1.5}.accounts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);margin:0 0 1rem}.accounts>div{padding:.8rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.accounts dt{font-size:.78rem;color:var(--muted)}.accounts dd{margin:.3rem 0 0;font-size:1.02rem;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:1rem 0 0;gap:.9rem 2rem}.settings>div{border-bottom:1px solid var(--line);padding-bottom:.5rem}.settings dt{font-size:.77rem;color:var(--muted)}.settings dd{margin:.2rem 0 0;font-size:.86rem;overflow-wrap:anywhere}.disclosures>details{border-top:1px solid var(--line);padding:.85rem 0}.disclosures>details:last-child{border-bottom:1px solid var(--line)}pre,code{font:.78rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}pre{padding:.8rem;background:#e4e8da;border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere;max-height:28rem;overflow:auto;margin:.6rem 0 0}.stock-notes{margin-top:1rem}.subsection{margin-top:1.5rem}.subsection>h3{margin-bottom:.6rem}.intro-help{max-width:72ch;margin:.6rem 0 1.1rem;font-size:.85rem;color:var(--muted)}footer{border-top:1px solid var(--line);background:#e8e9dd}footer .wrap{padding-top:.8rem;padding-bottom:.8rem;display:flex;justify-content:space-between;gap:1rem;font-size:.74rem;color:#626954}footer p{margin:0}.skip-link{position:absolute;left:1rem;top:-100px;background:#fffdf6;padding:.6rem;z-index:4}.skip-link:focus{top:1rem}[hidden]{display:none!important}
+.masthead .wrap>div{min-width:0}h1,.operation-id{overflow-wrap:anywhere}.connection p{min-width:0;overflow-wrap:anywhere}
+@media(max-width:800px){.wrap{padding-left:1.2rem;padding-right:1.2rem}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics>div{padding:.85rem!important}.metrics>div:nth-child(2){border-right:0}.metrics>div:nth-child(-n+2){border-bottom:1px solid #b5bca8}.home-lower,.record-layout{grid-template-columns:1fr;gap:1.4rem}.attention,.record-aside{border-left:0;border-top:1px solid var(--line);padding:1rem 0 0}.accounts{grid-template-columns:repeat(2,minmax(0,1fr))}.navigation button{padding-left:.7rem;padding-right:.7rem}.quick-actions button{padding:.9rem}.quick-actions b{display:none}}
+@media(max-width:520px){.masthead .wrap{align-items:flex-start;flex-direction:column;gap:.7rem}.masthead .identity-meta{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}.operation-id{margin:0;text-align:left}.navigation .wrap{padding:0 .55rem;gap:0}.navigation button{font-size:.8rem;padding:.85rem .6rem .65rem}.page-intro{padding-top:1.15rem}.page-intro p{font-size:.77rem}.band>.wrap{padding-top:1.1rem;padding-bottom:1.1rem}.quick-actions{grid-template-columns:1fr}.quick-actions button{min-height:0;border-right:0;border-bottom:1px solid #aaa78e}.quick-actions button:last-child{border-bottom:0}.quick-actions b{display:block}.fields,.settings{grid-template-columns:1fr}.span-two{grid-column:auto}.form-submit{align-items:stretch;flex-direction:column}.workflow-switch button{flex:1;padding:.65rem .4rem;font-size:.82rem}.date-field{max-width:none}.metrics dd{font-size:1.05rem}.connection .wrap{align-items:flex-start}.connection p{font-size:.74rem}footer .wrap{flex-direction:column;gap:.2rem}.table-scroll table{min-width:480px}.recent-table table{min-width:320px}.section-head{align-items:flex-start}}
+
+.label-line,.help-label{display:inline-flex;align-items:center;gap:.25rem;max-width:100%;vertical-align:middle;min-height:1.5rem}
+.label-line label,.help-label-text{margin:0;min-width:0;white-space:normal}
+.info-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 1.5rem;vertical-align:middle;width:1.5rem;height:1.5rem;min-width:1.5rem;margin:0;padding:0;border:0;background:transparent;color:#68745b;line-height:1;border-radius:0}
+.info-button svg{display:block;width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.info-button .info-dot{fill:currentColor;stroke:none}
+.info-button:hover:not(:disabled),.info-button[aria-expanded="true"]{background:#d6dccb;color:#293621}
+.help-tooltip{position:fixed;z-index:1000;width:22rem;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;overscroll-behavior:contain;margin:0;padding:.75rem .9rem;background:#f1ecdc;border:1px solid #8c987e;color:#35402d;font-size:.86rem;font-weight:400;line-height:1.55;letter-spacing:normal;text-align:left;white-space:normal;overflow-wrap:anywhere;user-select:text}
+.field input,.field select{margin-top:.25rem}
+.form-details .field{margin-top:.5rem}
+.date-field{font-size:.83rem;font-weight:600}
+</style>
+</head>
+<body>
+<a class="skip-link" id="skip-workspace" href="#view-title">Skip to workspace</a>
+<header class="masthead"><div class="wrap">
+<div><p class="eyebrow">Post-profit exchange</p><h1 id="display-name">Loading operation…</h1></div>
+<div class="identity-meta"><span class="badge" id="provenance">Connecting</span><p class="operation-id" id="environment-id"></p></div>
+</div></header>
+<nav class="navigation" aria-label="Workspace"><div class="wrap">
+<button type="button" id="nav-home" aria-current="page">Home</button><button type="button" id="nav-record">Record</button>
+<button type="button" id="nav-stock">Stock</button><button type="button" id="nav-activity">Activity</button><button type="button" id="nav-advanced">Advanced</button>
+</div></nav>
+<div class="connection"><div class="wrap"><p id="status" role="status" aria-live="polite">Connecting to the local exchange service…</p><button type="button" class="secondary" id="refresh" disabled>Refresh</button></div></div>
+<div class="notice-area"><div class="wrap"><p id="error" role="alert" hidden></p>
+<div id="pending" hidden role="region" aria-labelledby="pending-title"><h2 id="pending-title">A transaction needs confirmation</h2><p id="pending-message"></p><button type="button" id="retry" disabled>Confirm the same transaction</button>
+<p class="help">Do not enter it again. This retry uses the original record so a lost response cannot create a duplicate. The request is kept in this browser for recovery; do not clear browser storage while it is pending.</p></div>
+</div></div>
+<main id="content" hidden>
+<div class="wrap page-intro"><h2 id="view-title" tabindex="-1">Home</h2><p id="as-of"></p></div>
+<div id="screen-home">
+<section class="band sage" aria-labelledby="overview-heading"><div class="wrap">
+<div class="section-head"><div><h3 id="overview-heading">Current balances</h3><p class="help">The latest saved accounts for this exchange.</p></div><button type="button" class="secondary" id="home-accounts">All accounts</button></div>
+<dl class="metrics">
+<div><dt><span class="help-label"><span class="help-label-text">Cash on hand</span><button type="button" class="info-button" id="info-home-cash" data-help="help-home-cash" aria-label="About Cash on hand" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-home-cash"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="home-cash" aria-describedby="help-home-cash"></dd><dd class="context-help" id="help-home-cash" hidden>Cash recorded in the accounts, including the protected reserve. This page is not connected to a bank account or payment terminal.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Stock at purchase cost</span><button type="button" class="info-button" id="info-home-stock" data-help="help-home-stock" aria-label="About Stock at purchase cost" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-home-stock"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="home-stock" aria-describedby="help-home-stock"></dd><dd class="context-help" id="help-home-stock" hidden>Value of the remaining stock at its recorded purchase costs. Each lot keeps its own cost; this is not its potential sales revenue.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Cash after commitments</span><button type="button" class="info-button" id="info-home-available" data-help="help-home-available" aria-label="About Cash after commitments" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-home-available"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="home-available" aria-describedby="help-home-available"></dd><dd class="context-help" id="help-home-available" hidden>Recorded cash minus the reserve and unpaid obligations. A negative value means those commitments exceed cash. This balance does not include future costs or sales and is not a spending approval.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Unpaid obligations</span><button type="button" class="info-button" id="info-home-obligations" data-help="help-home-obligations" aria-label="About Unpaid obligations" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-home-obligations"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="home-obligations" aria-describedby="help-home-obligations"></dd><dd class="context-help" id="help-home-obligations" hidden>Costs already recorded but not yet paid. They reduce net assets and earned funding when recorded. Future or predicted costs are not included.</dd></div>
+</dl>
+</div></section>
+<section class="band sand" aria-labelledby="quick-heading"><div class="wrap">
+<div class="section-head"><h3 id="quick-heading">Record activity</h3></div>
+<div class="quick-actions">
+<button type="button" id="action-sale" disabled>Record a sale <b aria-hidden="true">→</b><span>Goods sold and payment received</span></button>
+<button type="button" id="action-delivery" disabled>Record a delivery <b aria-hidden="true">→</b><span>Stock received and purchase paid</span></button>
+<button type="button" id="action-expense" disabled>Add an expense <b aria-hidden="true">→</b><span>A new operating cost or worker pay</span></button>
+</div></div></section>
+<section class="band" aria-labelledby="recent-heading"><div class="wrap home-lower">
+<div><div class="section-head"><h3 id="recent-heading">Recent activity</h3><button type="button" class="secondary" id="home-activity">View all</button></div>
+<div class="table-scroll recent-table"><table><thead><tr><th scope="col">Date</th><th scope="col">Activity</th><th scope="col" class="number">Cash change</th></tr></thead><tbody id="home-history"></tbody></table></div></div>
+<aside class="attention" aria-labelledby="attention-heading"><h3 id="attention-heading">Notices</h3><ul id="home-attention"></ul></aside>
+</div></section>
+</div>
+<div id="screen-record" hidden>
+<section class="band" aria-labelledby="record-heading"><div class="wrap">
+<h3 id="record-heading">Record activity</h3><p class="intro-help">Record a completed sale, a paid delivery or a new expense. Saving updates the accounts and stock.</p>
+<div class="workflow-switch" role="group" aria-label="Choose activity">
+<button type="button" id="choose-sale" aria-pressed="true" disabled>Sale</button><button type="button" id="choose-delivery" aria-pressed="false" disabled>Delivery</button><button type="button" id="choose-expense" aria-pressed="false" disabled>Expense</button>
+</div>
+<div class="record-layout"><form id="transaction-form"><fieldset id="entry-fields" disabled>
+<select id="kind" hidden aria-label="Activity"><option value="sale" selected>Sale</option><option value="delivery">Delivery</option><option value="expense">Expense</option></select>
+<fieldset id="sale-fields"><legend id="record-title">Record a sale</legend><div class="fields">
+<div class="field span-two"><div class="label-line"><label for="sale-sku">Product</label><button type="button" class="info-button" id="info-sale-sku" data-help="help-sale-sku" aria-label="About Product" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-sale-sku"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><select id="sale-sku" aria-describedby="help-sale-sku" required></select><p class="context-help" id="help-sale-sku" hidden>Product sold from this operation’s catalog. Selecting a product loads its saved public price; enter the price actually received for this sale.</p></div>
+<div class="field"><div class="label-line"><label for="sale-units">Quantity sold</label><button type="button" class="info-button" id="info-sale-units" data-help="help-sale-units" aria-label="About Quantity sold" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-sale-units"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="sale-units" aria-describedby="help-sale-units" type="number" min="1" max="1000000" step="1" placeholder="Whole units" required><p class="context-help" id="help-sale-units" hidden>Number of whole units sold. The application checks that enough stock is available. Fractional units are not supported.</p></div>
+<div class="field"><div class="label-line"><label for="unit-price">Price paid per unit</label><button type="button" class="info-button" id="info-unit-price" data-help="help-unit-price" aria-label="About Price paid per unit" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-unit-price"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="unit-price" aria-describedby="help-unit-price" type="text" inputmode="decimal" placeholder="0.00" required><small class="help">Enter the actual price received.</small><p class="context-help" id="help-unit-price" hidden>Actual amount received for one unit. It starts at the saved public price. Changing it here affects only this sale; it does not change the public price. Use up to two decimal places, for example 2.50.</p></div>
+</div></fieldset>
+<fieldset id="delivery-fields" hidden disabled><legend>Record a paid delivery</legend><div class="fields">
+<div class="field span-two"><div class="label-line"><label for="delivery-sku">Product</label><button type="button" class="info-button" id="info-delivery-sku" data-help="help-delivery-sku" aria-label="About Product" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-delivery-sku"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><select id="delivery-sku" aria-describedby="help-delivery-sku" required></select><p class="context-help" id="help-delivery-sku" hidden>Product received from this operation’s catalog. Each delivery adds a separate stock lot with its own purchase cost.</p></div>
+<div class="field"><div class="label-line"><label for="delivery-units">Quantity received</label><button type="button" class="info-button" id="info-delivery-units" data-help="help-delivery-units" aria-label="About Quantity received" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-delivery-units"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="delivery-units" aria-describedby="help-delivery-units" type="number" min="1" max="1000000" step="1" placeholder="Whole units" required><p class="context-help" id="help-delivery-units" hidden>Number of whole units received. The total purchase payment is this quantity multiplied by the purchase cost per unit.</p></div>
+<div class="field"><div class="label-line"><label for="unit-cost">Purchase cost per unit</label><button type="button" class="info-button" id="info-unit-cost" data-help="help-unit-cost" aria-label="About Purchase cost per unit" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-unit-cost"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="unit-cost" aria-describedby="help-unit-cost" type="text" inputmode="decimal" placeholder="0.00" required><p class="context-help" id="help-unit-cost" hidden>Actual purchase cost of one unit in this delivery. The total is deducted from recorded cash. Zero is allowed for a free receipt. This cost does not update the saved replacement cost or public price.</p></div>
+</div>
+<details class="form-details" id="delivery-reference"><summary>Delivery reference</summary><div class="field"><div class="label-line"><label for="lot-id">Stock lot identifier</label><button type="button" class="info-button" id="info-lot-id" data-help="help-lot-id" aria-label="About Stock lot identifier" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-lot-id"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="lot-id" aria-describedby="help-lot-id" maxlength="64" required><p class="context-help" id="help-lot-id" hidden>Unique reference for this batch of stock, generated automatically. You may replace it with 1–64 letters, digits, hyphens, underscores or dots. Purchase costs remain attached to the batch as its units are sold.</p></div></details>
+</fieldset>
+<fieldset id="expense-fields" hidden disabled><legend>Add a new expense</legend><div class="fields">
+<div class="field"><div class="label-line"><label for="expense-category">Category</label><button type="button" class="info-button" id="info-expense-category" data-help="help-expense-category" aria-label="About Category" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-expense-category"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><select id="expense-category" aria-describedby="help-expense-category"><option value="operating">Operating expense</option><option value="wages">Worker pay</option></select><p class="context-help" id="help-expense-category" hidden>Choose worker pay for wages or operating expense for other running costs. Both reduce the earned funding balance once the expense is recorded.</p></div>
+<div class="field"><div class="label-line"><label for="settlement">Payment status</label><button type="button" class="info-button" id="info-settlement" data-help="help-settlement" aria-label="About Payment status" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-settlement"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><select id="settlement" aria-describedby="help-settlement"><option value="paid">Already paid</option><option value="unpaid">Still to be paid</option></select><p class="context-help" id="help-settlement" hidden>Already paid deducts the amount from cash. Still to be paid creates an unpaid obligation without changing cash. Both record a new expense; this form cannot settle an obligation that was recorded earlier.</p></div>
+<div class="field span-two"><div class="label-line"><label for="expense-description">Description</label><button type="button" class="info-button" id="info-expense-description" data-help="help-expense-description" aria-label="About Description" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-expense-description"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="expense-description" aria-describedby="help-expense-description" maxlength="512" placeholder="For example, electricity" required><p class="context-help" id="help-expense-description" hidden>Short description identifying this new cost, such as the supplier, service or pay period. It is retained with the transaction for later inspection.</p></div>
+<div class="field"><div class="label-line"><label for="expense-amount">Amount</label><button type="button" class="info-button" id="info-expense-amount" data-help="help-expense-amount" aria-label="About Amount" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-expense-amount"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="expense-amount" aria-describedby="help-expense-amount" type="text" inputmode="decimal" placeholder="0.00" required><p class="context-help" id="help-expense-amount" hidden>Total amount of this new expense in the operation’s currency. Use a positive amount with up to two decimal places, for example 12.50.</p></div>
+</div></fieldset>
+<div class="field date-field"><div class="label-line"><label for="date">Record date</label><button type="button" class="info-button" id="info-date" data-help="help-date" aria-label="About Record date" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-date"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></div><input id="date" aria-describedby="help-date" type="date" required><p class="context-help" id="help-date" hidden>Date of the transaction. It must be on or after the current accounts date; the application does not insert records into an earlier accounting position.</p></div>
+<div class="form-submit"><p id="entry-preview" aria-live="polite">Enter a quantity to see the total.</p><button type="submit" id="save" disabled>Record sale</button></div>
+</fieldset></form>
+<aside class="record-aside" aria-labelledby="context-heading"><h3 id="context-heading">Transaction details</h3><p id="entry-context"></p><p id="record-note"></p><p class="help" id="currency-note"></p>
+<p class="help">This records a completed payment or a new unpaid cost. It does not charge a customer, pay a supplier or change the public price.</p></aside>
+</div></div></section>
+</div>
+<div id="screen-stock" hidden>
+<section class="band" aria-labelledby="products-heading"><div class="wrap">
+<div class="section-head"><div><h3 id="products-heading">Products on hand</h3><p class="help" id="inventory-units"></p></div></div>
+<div class="table-scroll"><table><thead><tr><th scope="col">Product</th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Units on hand</span><button type="button" class="info-button" id="info-stock-units" data-help="help-stock-units" aria-label="About Units on hand" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-units"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-units" hidden>Whole units remaining across all purchase lots for this product.</span></th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Public price / unit</span><button type="button" class="info-button" id="info-stock-price" data-help="help-stock-price" aria-label="About Public price / unit" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-price"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-price" hidden>Saved selling price for one unit. This operational interface does not calculate or publish new prices. A sale can record the actual price received without changing this saved price.</span></th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Replacement cost / unit</span><button type="button" class="info-button" id="info-stock-replacement" data-help="help-stock-replacement" aria-label="About Replacement cost / unit" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-replacement"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-replacement" hidden>Saved cost estimate or quote for obtaining one more unit. It can differ from the purchase costs of stock already on hand. Recording a delivery does not change it.</span></th><th scope="col"><span class="help-label"><span class="help-label-text">SKU</span><button type="button" class="info-button" id="info-stock-sku" data-help="help-stock-sku" aria-label="About SKU" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-sku"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-sku" hidden>Stock-keeping unit: the identifier used to match a product across the catalog, stock lots and transaction records.</span></th></tr></thead><tbody id="products"></tbody></table></div>
+
+</div></section>
+<section class="band sage" aria-labelledby="lots-heading"><div class="wrap"><details><summary id="lots-heading">Purchase costs and stock lots</summary>
+<p class="help">Each delivery has its own purchase cost. Sales use the oldest available lots first (FIFO).</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">SKU</th><th scope="col"><span class="help-label"><span class="help-label-text">Stock lot</span><button type="button" class="info-button" id="info-stock-lot" data-help="help-stock-lot" aria-label="About Stock lot" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-lot"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-lot" hidden>A batch of stock with its own purchase cost. Each paid delivery adds a lot. Sales consume the oldest available lot first.</span></th><th scope="col" class="number">Units remaining</th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Purchase cost / unit</span><button type="button" class="info-button" id="info-stock-cost" data-help="help-stock-cost" aria-label="About Purchase cost / unit" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-stock-cost"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-stock-cost" hidden>Actual acquisition cost of one unit in this lot. It determines the stock value removed and the earned funding effect when the unit is sold.</span></th></tr></thead><tbody id="lots"></tbody></table></div>
+</details></div></section>
+</div>
+<div id="screen-activity" hidden>
+<section class="band" aria-labelledby="history-heading"><div class="wrap">
+<div class="section-head"><h3 id="history-heading">Recorded activity</h3><span class="help" id="history-count"></span></div>
+<p class="intro-help">Newest records first. Amounts come from the saved accounts. Open Details to inspect the original inputs and their accounting effects.</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">Date</th><th scope="col">Activity</th><th scope="col">Record</th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Cash change</span><button type="button" class="info-button" id="info-activity-cash" data-help="help-activity-cash" aria-label="About Cash change" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-activity-cash"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-activity-cash" hidden>Change in recorded cash caused by this transaction. Positive adds cash; negative deducts it. An unpaid expense leaves cash unchanged.</span></th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Stock value change</span><button type="button" class="info-button" id="info-activity-stock" data-help="help-activity-stock" aria-label="About Stock value change" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-activity-stock"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-activity-stock" hidden>Change in stock value at purchase cost. Deliveries add their purchase value; sales remove the cost of the oldest units sold.</span></th><th scope="col" class="number"><span class="help-label"><span class="help-label-text">Earned funding change</span><button type="button" class="info-button" id="info-activity-funding" data-help="help-activity-funding" aria-label="About Earned funding change" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-activity-funding"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span><span class="context-help" id="help-activity-funding" hidden>Change in the policy balance: a sale adds revenue minus the purchase cost of the units sold; a new expense reduces it, whether paid or unpaid. A delivery alone does not change it.</span></th></tr></thead><tbody id="history"></tbody></table></div>
+<p class="help stock-notes">Opening balances are shown in the accounts; they are not sales or transaction income.</p>
+</div></section></div>
+<div id="screen-advanced" hidden>
+<section class="band sage" aria-labelledby="accounts-heading"><div class="wrap">
+<div class="section-head"><h3 id="accounts-heading">Full accounts</h3><span class="help" id="database-status"></span></div>
+<dl class="accounts">
+<div><dt><span class="help-label"><span class="help-label-text">Cash</span><button type="button" class="info-button" id="info-cash" data-help="help-cash" aria-label="About Cash" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-cash"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="cash" aria-describedby="help-cash"></dd><dd class="context-help" id="help-cash" hidden>Cash recorded in the accounts, including the reserve. Deliveries, cash sales and paid expenses change this balance when saved; the application does not move money through a bank or payment provider.</dd></div><div><dt><span class="help-label"><span class="help-label-text">Reserve within cash</span><button type="button" class="info-button" id="info-reserve" data-help="help-reserve" aria-label="About Reserve within cash" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-reserve"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="reserve" aria-describedby="help-reserve"></dd><dd class="context-help" id="help-reserve" hidden>Part of the cash balance protected from being spent on paid deliveries and expenses. It is already included in cash and must not be counted as additional money.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Earned funding balance</span><button type="button" class="info-button" id="info-earned-funding" data-help="help-earned-funding" aria-label="About Earned funding balance" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-earned-funding"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="earned-funding" aria-describedby="help-earned-funding"></dd><dd class="context-help" id="help-earned-funding" hidden>The opening policy balance, plus sales proceeds, minus the purchase cost of stock sold and new expenses, including unpaid expenses. It is a policy balance, not a separate cash account or automatically distributable profit.</dd></div><div><dt><span class="help-label"><span class="help-label-text">Inventory at acquisition cost</span><button type="button" class="info-button" id="info-inventory-value" data-help="help-inventory-value" aria-label="About Inventory at acquisition cost" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-inventory-value"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="inventory-value" aria-describedby="help-inventory-value"></dd><dd class="context-help" id="help-inventory-value" hidden>Remaining units in each stock lot multiplied by that lot’s recorded purchase cost, added across all products. The oldest available lots are used first when sales are recorded.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Outstanding obligations</span><button type="button" class="info-button" id="info-obligations-total" data-help="help-obligations-total" aria-label="About Outstanding obligations" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-obligations-total"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="obligations-total" aria-describedby="help-obligations-total"></dd><dd class="context-help" id="help-obligations-total" hidden>Recorded costs that remain unpaid. They are already accounted for as expenses. Entering them again as new expenses would count the cost twice.</dd></div><div><dt><span class="help-label"><span class="help-label-text">Cash excluding reserve</span><button type="button" class="info-button" id="info-cash-unreserved" data-help="help-cash-unreserved" aria-label="About Cash excluding reserve" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-cash-unreserved"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="cash-unreserved" aria-describedby="help-cash-unreserved"></dd><dd class="context-help" id="help-cash-unreserved" hidden>Recorded cash minus the protected reserve. Unpaid obligations have not been deducted from this figure.</dd></div>
+<div><dt><span class="help-label"><span class="help-label-text">Cash after obligations and reserve</span><button type="button" class="info-button" id="info-cash-after-obligations" data-help="help-cash-after-obligations" aria-label="About Cash after obligations and reserve" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-cash-after-obligations"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="cash-after-obligations" aria-describedby="help-cash-after-obligations"></dd><dd class="context-help" id="help-cash-after-obligations" hidden>Recorded cash minus the protected reserve and unpaid obligations. It can be negative. It does not account for unrecorded or future costs.</dd></div><div><dt><span class="help-label"><span class="help-label-text">Net assets</span><button type="button" class="info-button" id="info-net-assets" data-help="help-net-assets" aria-label="About Net assets" aria-expanded="false" aria-controls="help-tooltip" aria-describedby="help-net-assets"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle class="info-dot" cx="12" cy="7" r="1"></circle></svg></button></span></dt><dd id="net-assets" aria-describedby="help-net-assets"></dd><dd class="context-help" id="help-net-assets" hidden>Recorded cash plus stock at purchase cost, minus unpaid obligations. The reserve remains part of cash and is not deducted again.</dd></div>
+</dl>
+
+<div class="subsection"><h3 id="obligations-heading">Outstanding obligations</h3>
+<div class="table-scroll"><table><thead><tr><th scope="col">Record</th><th scope="col">Kind</th><th scope="col" class="number">Amount</th></tr></thead><tbody id="obligations"></tbody></table></div>
+<p class="help stock-notes">These are recorded unpaid costs. Paying an existing obligation is not supported by the expense form; entering it again would record a second cost.</p>
+</div></div></section>
+<section class="band" aria-labelledby="settings-heading"><div class="wrap">
+<h3 id="settings-heading">Operation settings <span class="help">· Read-only</span></h3>
+<p class="intro-help">These settings are supplied by the operation’s configuration files. Changes to an initialized operation require a supported migration.</p>
+<dl class="settings" id="setup-settings"></dl><p class="help stock-notes" id="description"></p><p class="help" id="capacity-note"></p>
+</div></section>
+<section class="band" aria-labelledby="records-heading"><div class="wrap">
+<h3 id="records-heading">Configuration and records</h3><p class="intro-help">Configuration and saved records used by this operation.</p>
+<div class="disclosures">
+<details><summary>Environment configuration</summary><pre id="configuration"></pre></details>
+<details><summary>Presentation metadata and product catalog</summary><pre id="metadata"></pre></details>
+<details><summary>Complete saved state and transaction history</summary><pre id="raw-record"></pre></details>
+</div></div></section>
+</div></main>
+<footer><div class="wrap"><p>Post-profit exchange</p><p>Records stay in the selected environment.</p></div></footer>
+<div id="help-tooltip" class="help-tooltip" role="tooltip" hidden></div>
+<script>
+"use strict";
+(() => {
+  const byId = id => document.getElementById(id);
+  const set = (id, value) => { byId(id).textContent = String(value); };
+  const tooltip = byId("help-tooltip");
+  let activeHelp = null, helpTimer = null;
+  const cancelHelpTimer = () => { clearTimeout(helpTimer); helpTimer = null; };
+  const closeHelp = () => {
+    cancelHelpTimer();
+    if (activeHelp) activeHelp.button.setAttribute("aria-expanded", "false");
+    activeHelp = null; tooltip.hidden = true;
+  };
+  const positionHelp = button => {
+    const viewport = window.visualViewport;
+    const width = viewport?.width || window.innerWidth, height = viewport?.height || window.innerHeight;
+    const originX = viewport?.offsetLeft || 0, originY = viewport?.offsetTop || 0;
+    const margin = 12, gap = 8;
+    tooltip.style.maxWidth = Math.max(0, width - margin * 2) + "px";
+    tooltip.style.maxHeight = Math.max(0, height - margin * 2) + "px";
+    tooltip.style.left = originX + margin + "px"; tooltip.style.top = originY + margin + "px";
+    const anchor = button.getBoundingClientRect(), box = tooltip.getBoundingClientRect();
+    const minX = originX + margin, minY = originY + margin;
+    const maxX = Math.max(minX, originX + width - box.width - margin);
+    const maxY = Math.max(minY, originY + height - box.height - margin);
+    const x = Math.min(maxX, Math.max(minX, anchor.left + anchor.width / 2 - box.width / 2));
+    let y = anchor.bottom + gap;
+    if (y + box.height > originY + height - margin) y = anchor.top - box.height - gap;
+    tooltip.style.left = x + "px"; tooltip.style.top = Math.min(maxY, Math.max(minY, y)) + "px";
+  };
+  const openHelp = (button, caption) => {
+    cancelHelpTimer();
+    if (activeHelp?.button !== button) {
+      closeHelp();
+      activeHelp = {button, pinned: false, overButton: false, overTooltip: false};
+    }
+    tooltip.textContent = caption.textContent;
+    tooltip.hidden = false; button.setAttribute("aria-expanded", "true");
+    positionHelp(button);
+    return activeHelp;
+  };
+  const scheduleHelpClose = () => {
+    cancelHelpTimer();
+    helpTimer = setTimeout(() => {
+      if (activeHelp && !activeHelp.pinned && !activeHelp.overButton && !activeHelp.overTooltip &&
+          document.activeElement !== activeHelp.button) closeHelp();
+    }, 140);
+  };
+  const helpIcon = () => {
+    const ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
+    for (const [name, value] of Object.entries({viewBox: "0 0 24 24", width: "16", height: "16", "aria-hidden": "true", focusable: "false"})) svg.setAttribute(name, value);
+    for (const [tag, attributes] of [["circle", {cx: "12", cy: "12", r: "9"}],
+      ["path", {d: "M12 11v6"}], ["circle", {class: "info-dot", cx: "12", cy: "7", r: "1"}]]) {
+      const part = document.createElementNS(ns, tag);
+      for (const [name, value] of Object.entries(attributes)) part.setAttribute(name, value);
+      svg.appendChild(part);
+    }
+    return svg;
+  };
+  // One overlay keeps help outside scrolling tables without changing the form layout.
+  const wireHelp = (button, caption) => {
+    button.addEventListener("pointerenter", event => {
+      if (event.pointerType !== "touch") openHelp(button, caption).overButton = true;
+    });
+    button.addEventListener("pointerleave", event => {
+      if (event.pointerType !== "touch" && activeHelp?.button === button) {
+        activeHelp.overButton = false; scheduleHelpClose();
+      }
+    });
+    button.addEventListener("focus", () => { openHelp(button, caption); });
+    button.addEventListener("blur", () => { if (activeHelp?.button === button) scheduleHelpClose(); });
+    button.addEventListener("click", () => {
+      if (activeHelp?.button === button && activeHelp.pinned) closeHelp();
+      else openHelp(button, caption).pinned = true;
+    });
+  };
+  tooltip.addEventListener("pointerenter", event => {
+    if (event.pointerType !== "touch" && activeHelp) { cancelHelpTimer(); activeHelp.overTooltip = true; }
+  });
+  tooltip.addEventListener("pointerleave", event => {
+    if (event.pointerType !== "touch" && activeHelp) { activeHelp.overTooltip = false; scheduleHelpClose(); }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && activeHelp) { event.preventDefault(); closeHelp(); }
+  });
+  document.addEventListener("pointerdown", event => {
+    if (activeHelp && !activeHelp.button.contains(event.target) && !tooltip.contains(event.target)) closeHelp();
+  });
+  window.addEventListener("resize", closeHelp);
+  window.addEventListener("scroll", event => { if (!tooltip.contains(event.target)) closeHelp(); }, true);
+  window.visualViewport?.addEventListener("resize", closeHelp);
+  window.visualViewport?.addEventListener("scroll", closeHelp);
+  let report = null, token = null, pending = null, busy = false, ready = false, initialized = false;
+  const screens = ["home", "record", "stock", "activity", "advanced"];
+  const screenLabels = {home: "Home", record: "Record activity", stock: "Stock", activity: "Activity", advanced: "Advanced"};
+  let activeScreen = "home";
+  const showScreen = (name, focus = false) => {
+    closeHelp();
+    if (!screens.includes(name)) name = "home";
+    activeScreen = name;
+    for (const screen of screens) {
+      byId("screen-" + screen).hidden = screen !== name;
+      if (screen === name) byId("nav-" + screen).setAttribute("aria-current", "page");
+      else byId("nav-" + screen).removeAttribute("aria-current");
+    }
+    set("view-title", screenLabels[name]);
+    if (focus) byId("view-title").focus();
+  };
+  const navigate = name => {
+    showScreen(name, true);
+    window.location.hash = name;
+  };
+  // Recovery requests only: this browser outbox is never authoritative accounting.
+  const outboxPrefix = () => "exchange.pending.v1:" + encodeURIComponent(window.location.origin) +
+    ":" + encodeURIComponent(report.environment.environment_id) + ":";
+  const pendingKeys = () => {
+    const prefix = outboxPrefix(), keys = [];
+    for (let index = 0; index < localStorage.length; index++) {
+      const key = localStorage.key(index);
+      if (key?.startsWith(prefix)) keys.push(key);
+    }
+    return keys.sort();
+  };
+  const persistPending = candidate => {
+    const key = outboxPrefix() + encodeURIComponent(candidate.id);
+    const existing = localStorage.getItem(key);
+    if (existing !== null) {
+      const previous = JSON.parse(existing);
+      if (previous.body !== candidate.body) throw new Error("A different pending request already uses this transaction identity. It was preserved.");
+    }
+    const serialized = JSON.stringify({id: candidate.id, body: candidate.body});
+    localStorage.setItem(key, serialized);
+    if (localStorage.getItem(key) !== serialized) throw new Error("The browser could not verify its pending request. Nothing new was submitted.");
+  };
+  const restorePending = () => {
+    if (pending) return;
+    const keys = pendingKeys();
+    if (!keys.length) return;
+    const retained = JSON.parse(localStorage.getItem(keys[0]));
+    const request = JSON.parse(retained.body);
+    if (typeof retained.id !== "string" || request.event?.id !== retained.id ||
+        request.event.environment_id !== report.environment.environment_id ||
+        request.event.schema_version !== "exchange.transaction.v1" ||
+        !Number.isSafeInteger(request.expected_revision) ||
+        keys[0] !== outboxPrefix() + encodeURIComponent(retained.id)) {
+      throw new Error("A retained request has an invalid identity. Browser records were preserved for inspection.");
+    }
+    pending = {id: retained.id, body: retained.body, uncertain: true};
+    const event = request.event, details = event.details;
+    byId("kind").value = event.kind; byId("date").value = event.date;
+    if (event.kind === "delivery") {
+      byId("delivery-sku").value = details.sku; byId("lot-id").value = details.lot_id;
+      byId("delivery-units").value = String(details.units); byId("unit-cost").value = decimal(details.unit_cost);
+    } else if (event.kind === "sale") {
+      byId("sale-sku").value = details.sku; byId("sale-units").value = String(details.units);
+      byId("unit-price").value = decimal(details.unit_price);
+    } else if (event.kind === "expense") {
+      byId("expense-category").value = details.category; byId("expense-description").value = details.description;
+      byId("expense-amount").value = decimal(details.amount); byId("settlement").value = details.settlement;
+    }
+    kindFields();
+  };
+  const clearPending = () => {
+    const key = outboxPrefix() + encodeURIComponent(pending.id);
+    const existing = localStorage.getItem(key);
+    if (existing !== null && JSON.parse(existing).body !== pending.body) throw new Error("The retained request changed. It was preserved for inspection.");
+    localStorage.removeItem(key);
+    if (localStorage.getItem(key) !== null) throw new Error("The browser could not clear the confirmed request. Retry to confirm it again.");
+    pending = null;
+  };
+  const integer = value => {
+    if (!Number.isSafeInteger(value)) throw new Error("Saved state contains an invalid integer amount or count.");
+    return BigInt(value);
+  };
+  const decimal = value => {
+    const amount = integer(value), absolute = amount < 0n ? -amount : amount;
+    return (amount < 0n ? "-" : "") + (absolute / 100n) + "." + (absolute % 100n).toString().padStart(2, "0");
+  };
+  const formatMinor = amount => {
+    const absolute = amount < 0n ? -amount : amount;
+    return (amount < 0n ? "−" : "") + (absolute / 100n).toLocaleString("en-US") + "." +
+      (absolute % 100n).toString().padStart(2, "0") + " " + report.environment.currency;
+  };
+  const money = value => formatMinor(integer(value));
+  const readMoney = (id, allowZero = false) => {
+    const value = byId(id).value.trim();
+    if (!/^[0-9]+(?:\.[0-9]{1,2})?$/.test(value)) throw new Error("Enter money as a decimal with at most two places, for example 12.50. Do not use commas or exponents.");
+    const [whole, fraction = ""] = value.split(".");
+    const amount = BigInt(whole) * 100n + BigInt(fraction.padEnd(2, "0"));
+    if (amount > 9000000000000n || (allowZero ? amount < 0n : amount <= 0n)) throw new Error("The amount must be " + (allowZero ? "zero or greater" : "greater than zero") + " and within the supported monetary limit.");
+    return Number(amount);
+  };
+  const readUnits = id => {
+    const value = byId(id).value.trim();
+    if (!/^[0-9]+$/.test(value) || BigInt(value) < 1n || BigInt(value) > 1000000n) throw new Error("Enter a whole quantity from 1 to 1,000,000.");
+    return Number(value);
+  };
+  const error = message => { set("error", message); byId("error").hidden = !message; };
+  const controls = () => {
+    byId("refresh").disabled = busy;
+    byId("entry-fields").disabled = !ready || busy || !!pending;
+    byId("save").disabled = !ready || busy || !!pending;
+    for (const kind of ["sale", "delivery", "expense"]) {
+      byId("action-" + kind).disabled = !ready || busy || !!pending;
+      byId("choose-" + kind).disabled = !ready || busy || !!pending;
+    }
+    byId("retry").disabled = !pending || busy || !token;
+    byId("pending").hidden = !pending;
+    if (pending) set("pending-message", (busy ? "Awaiting confirmation for transaction " : "Result not yet confirmed for transaction ") + pending.id + ".");
+  };
+  const numeric = text => ({text, number: true});
+  const row = (target, cells) => {
+    const tr = document.createElement("tr");
+    cells.forEach(cell => {
+      const td = document.createElement("td");
+      td.textContent = String(typeof cell === "object" ? cell.text : cell);
+      if (typeof cell === "object" && cell.number) td.className = "number";
+      tr.appendChild(td);
+    });
+    byId(target).appendChild(tr);
+    return tr;
+  };
+  const empty = (target, columns, message) => {
+    const tr = row(target, [message]); tr.children[0].colSpan = columns;
+  };
+  const checkReport = value => {
+    if (value?.schema_version !== "exchange.environment-view.v1" ||
+        value.environment?.schema_version !== "exchange.environment.v1" ||
+        value.metadata?.schema_version !== "exchange.environment-metadata.v1" ||
+        value.state?.schema_version !== "exchange.opening.v1" ||
+        value.environment.minor_unit_digits !== 2 ||
+        value.environment.environment_id !== value.state.environment_id ||
+        !["synthetic", "observed"].includes(value.metadata.provenance) ||
+        value.database?.backend !== "idydb" || value.database.status !== "loaded" ||
+        value.capabilities?.transactions !== true || !Number.isSafeInteger(value.revision) || value.revision < 0 ||
+        !Array.isArray(value.events) || !Array.isArray(value.state.products) ||
+        !Array.isArray(value.state.obligations) || !Array.isArray(value.metadata.products)) {
+      throw new Error("Unsupported or inconsistent operational state.");
+    }
+    for (const key of ["cash", "reserve", "earned_funding"]) integer(value.state[key]);
+    for (const key of ["inventory_value", "inventory_units", "obligations", "cash_unreserved", "cash_after_obligations_and_reserve", "net_assets"]) integer(value.summary?.[key]);
+    for (const product of value.state.products) {
+      if (!value.metadata.products.some(label => label.sku === product.sku) || !Array.isArray(product.lots)) throw new Error("Product metadata or acquisition lots are missing.");
+      integer(product.published_price); integer(product.replacement_cost);
+      for (const lot of product.lots) { integer(lot.units); integer(lot.unit_cost); }
+    }
+    for (const obligation of value.state.obligations) integer(obligation.amount);
+    for (const item of value.events) {
+      if (!item.event || !item.effect) throw new Error("Transaction history is incomplete.");
+      for (const key of ["cash_delta", "inventory_value_delta", "earned_funding_delta"]) integer(item.effect[key]);
+    }
+    return value;
+  };
+  const fillProducts = (id, products, labels) => {
+    const select = byId(id), previous = select.value;
+    select.replaceChildren();
+    products.forEach(product => {
+      const option = document.createElement("option");
+      option.value = product.sku; option.textContent = labels.get(product.sku).label + " · " + product.sku;
+      select.appendChild(option);
+    });
+    select.value = products.some(product => product.sku === previous) ? previous : products[0]?.sku || "";
+  };
+  const setSalePrice = () => {
+    const product = report?.state.products.find(item => item.sku === byId("sale-sku").value);
+    byId("unit-price").value = product ? decimal(product.published_price) : "";
+    updateEntry();
+  };
+  const ensureLot = () => { if (!byId("lot-id").value) byId("lot-id").value = "lot-" + crypto.randomUUID(); };
+  const kindFields = () => {
+    closeHelp();
+    const kind = byId("kind").value;
+    for (const name of ["delivery", "sale", "expense"]) {
+      byId(name + "-fields").hidden = name !== kind;
+      byId(name + "-fields").disabled = name !== kind;
+      byId("choose-" + name).setAttribute("aria-pressed", String(name === kind));
+    }
+    set("save", {sale: "Record sale", delivery: "Record delivery", expense: "Record expense"}[kind]);
+    updateEntry();
+  };
+  const chooseActivity = kind => {
+    if (!ready || busy || pending) return;
+    byId("kind").value = kind;
+    kindFields();
+  };
+  const productUnits = product => product.lots.reduce((sum, lot) => sum + integer(lot.units), 0n);
+  const productLabel = sku => report.metadata.products.find(item => item.sku === sku)?.label || sku;
+  const describeEvent = event => {
+    const details = event.details;
+    if (event.kind === "sale") return "Sale · " + details.units + " × " + productLabel(details.sku);
+    if (event.kind === "delivery") return "Delivery · " + details.units + " × " + productLabel(details.sku);
+    return (details.category === "wages" ? "Worker pay" : "Expense") + " · " + details.description +
+      (details.settlement === "unpaid" ? " (unpaid)" : " (paid)");
+  };
+  const updateEntry = () => {
+    if (!report) return;
+    const kind = byId("kind").value;
+    const product = report.state.products.find(item => item.sku === byId(kind === "sale" ? "sale-sku" : "delivery-sku").value);
+    if (kind === "expense") {
+      set("entry-context", byId("settlement").value === "unpaid" ?
+        "Still to be paid: records a new cost and adds an unpaid obligation. Cash stays unchanged." :
+        "Already paid: records a new cost and deducts its payment from cash.");
+      set("record-note", "Use this for a new expense only. It cannot settle a cost that is already listed as an unpaid obligation.");
+    } else {
+      set("entry-context", product ? productLabel(product.sku) + " · " + productUnits(product).toLocaleString("en-US") +
+        " units on hand. Public price: " + money(product.published_price) + " per unit." :
+        "No product is available in this environment. Inspect the catalog in Advanced.");
+      set("record-note", kind === "sale" ?
+        "The recorded sale adds its actual payment to cash and removes the oldest available stock. Its purchase cost is accounted for automatically." :
+        "This delivery adds stock and deducts the full purchase payment from cash. The saved replacement cost and public price stay unchanged.");
+    }
+    try {
+      let amount;
+      if (kind === "expense") amount = integer(readMoney("expense-amount"));
+      else amount = integer(readUnits(kind + "-units")) * integer(readMoney(kind === "sale" ? "unit-price" : "unit-cost", kind === "delivery"));
+      const caption = kind === "sale" ? "Payment received" : kind === "delivery" ? "Purchase paid" :
+        byId("settlement").value === "paid" ? "Expense paid" : "New unpaid cost";
+      set("entry-preview", amount > 9000000000000n ? "Total exceeds the supported transaction amount." : caption + " · " + formatMinor(amount));
+    } catch (_) {
+      set("entry-preview", kind === "expense" ? "Enter an amount to review the expense." : "Enter a whole quantity and unit amount to review the total.");
+    }
+  };
+  const renderHome = () => {
+    const {state, summary} = report;
+    for (const [id, amount] of [["home-cash", state.cash], ["home-stock", summary.inventory_value],
+      ["home-available", summary.cash_after_obligations_and_reserve], ["home-obligations", summary.obligations]]) set(id, money(amount));
+    byId("home-history").replaceChildren();
+    for (const item of report.events.slice(-5).reverse()) row("home-history", [item.event.date, describeEvent(item.event), numeric(money(item.effect.cash_delta))]);
+    if (!report.events.length) empty("home-history", 3, "No transactions recorded.");
+    const attention = byId("home-attention");
+    attention.replaceChildren();
+    const note = message => { const li = document.createElement("li"); li.textContent = message; attention.appendChild(li); };
+    if (report.metadata.provenance === "synthetic") note("Example environment. Its opening amounts are synthetic, not observed trading.");
+    if (summary.cash_after_obligations_and_reserve < 0) note("Cash shortfall: unpaid obligations and the reserve exceed cash by " +
+      money(-summary.cash_after_obligations_and_reserve) + ". Check the full accounts before recording further payments.");
+    const outOfStock = state.products.filter(product => productUnits(product) === 0n);
+    if (outOfStock.length) note("Out of stock: " + outOfStock.map(product => productLabel(product.sku)).join(", ") + ".");
+    if (summary.obligations > 0) note(money(summary.obligations) + " in unpaid obligations. You can inspect them in Advanced; settling an existing obligation is not supported yet.");
+    if (report.revision >= 90) note("Research record limit: " + report.revision + " of 100 transactions are used. New records cannot be added after the limit.");
+    if (!state.products.length) note("No products are available. The environment supplies the catalog; expenses can still be recorded.");
+  };
+  const renderSettings = () => {
+    const env = report.environment;
+    byId("setup-settings").replaceChildren();
+    const settings = [
+      ["identity", "Operation ID", env.environment_id, "Stable identifier linking this operation’s configuration, records and browser recovery requests."],
+      ["currency", "Currency", env.currency, "Currency used for all recorded monetary amounts. No currency conversion is performed."],
+      ["precision", "Decimal places", env.minor_unit_digits + " decimal places", "Amounts are stored as whole minor units and displayed with two decimal places. For example, 12.50 is stored as 1250; values are not rounded through floating-point accounting."],
+      ["database", "Database file", env.storage.database, "IdyDB file holding the opening position and recorded transactions for this operation. This path comes from its configuration."],
+      ["catalog", "Catalog and metadata file", env.metadata_file || "Supplied by the environment", "File supplying the operation’s display information, product names and record provenance. Product identifiers match the saved accounting records."],
+      ["opening", "Opening record file", env.opening_file || "Supplied by the environment", "Opening position imported when the database was initialized. Editing this file does not alter an existing database or its current accounts."]
+    ];
+    for (const [key, name, value, description] of settings) {
+      const group = document.createElement("div"), term = document.createElement("dt"), detail = document.createElement("dd");
+      const button = document.createElement("button"), caption = document.createElement("dd");
+      const label = document.createElement("span"), labelText = document.createElement("span");
+      label.className = "help-label"; labelText.className = "help-label-text"; labelText.textContent = name;
+      label.appendChild(labelText); detail.textContent = value;
+      button.id = "info-setting-" + key; button.type = "button"; button.className = "info-button";
+      button.appendChild(helpIcon()); button.setAttribute("aria-label", "About " + name);
+      button.setAttribute("data-help", "help-setting-" + key);
+      button.setAttribute("aria-controls", "help-tooltip"); button.setAttribute("aria-describedby", "help-setting-" + key); button.setAttribute("aria-expanded", "false");
+      caption.id = "help-setting-" + key; caption.className = "context-help"; caption.hidden = true; caption.textContent = description;
+      detail.setAttribute("aria-describedby", caption.id);
+      label.appendChild(button); term.appendChild(label); group.appendChild(term); group.appendChild(detail); group.appendChild(caption);
+      byId("setup-settings").appendChild(group); wireHelp(button, caption);
+    }
+    set("capacity-note", "Current research limit: " + report.revision + " of 100 transactions recorded. The complete stored record is also limited to 60 KiB. Refunds, corrections, and payment of existing obligations are not available in this version.");
+  };
+  const render = value => {
+    closeHelp();
+    checkReport(value);
+    report = value;
+    const {environment, metadata, state, summary} = report;
+    set("display-name", metadata.display_name);
+    document.title = metadata.display_name + " · Exchange workspace";
+    set("description", metadata.description);
+    set("provenance", metadata.provenance === "synthetic" ? "Example · synthetic records" : "Observed records");
+    set("environment-id", "Environment: " + environment.environment_id);
+    set("database-status", "IdyDB · saved revision " + report.revision);
+    set("as-of", "Accounts as of " + state.as_of + " · " + environment.currency);
+    set("currency-note", "All monetary inputs use " + environment.currency + " with two decimal places. Records cannot precede the current accounts date.");
+    byId("date").min = state.as_of;
+    for (const [id, amount] of [["cash", state.cash], ["reserve", state.reserve], ["earned-funding", state.earned_funding],
+      ["inventory-value", summary.inventory_value], ["obligations-total", summary.obligations], ["cash-unreserved", summary.cash_unreserved],
+      ["cash-after-obligations", summary.cash_after_obligations_and_reserve], ["net-assets", summary.net_assets]]) set(id, money(amount));
+    set("inventory-units", integer(summary.inventory_units).toLocaleString("en-US") + " units in saved stock.");
+    for (const id of ["products", "lots", "obligations", "history"]) byId(id).replaceChildren();
+    const labels = new Map(metadata.products.map(product => [product.sku, product]));
+    let lots = 0;
+    for (const product of state.products) {
+      const label = labels.get(product.sku);
+      row("products", [label.label, numeric(productUnits(product).toLocaleString("en-US")), numeric(money(product.published_price)),
+        numeric(money(product.replacement_cost)), product.sku]);
+      for (const lot of product.lots) {
+        row("lots", [product.sku, lot.id, numeric(integer(lot.units).toLocaleString("en-US")), numeric(money(lot.unit_cost))]); lots++;
+      }
+    }
+    if (!state.products.length) empty("products", 5, "No products recorded.");
+    if (!lots) empty("lots", 4, "No acquisition lots recorded.");
+    for (const obligation of state.obligations) row("obligations", [obligation.id, obligation.kind === "wages" ? "Worker pay" : "Operating expense", numeric(money(obligation.amount))]);
+    if (!state.obligations.length) empty("obligations", 3, "No outstanding obligations recorded.");
+    for (const item of report.events.slice().reverse()) {
+      const event = item.event, effect = item.effect;
+      const tr = row("history", [event.date, describeEvent(event), "", numeric(money(effect.cash_delta)), numeric(money(effect.inventory_value_delta)), numeric(money(effect.earned_funding_delta))]);
+      const details = document.createElement("details"), label = document.createElement("summary"), pre = document.createElement("pre");
+      label.textContent = "Details"; pre.textContent = JSON.stringify(item, null, 2);
+      details.appendChild(label); details.appendChild(pre); tr.children[2].appendChild(details);
+    }
+    if (!report.events.length) empty("history", 6, "No transactions recorded after opening.");
+    set("history-count", report.events.length + (report.events.length === 1 ? " saved record" : " saved records"));
+    renderHome(); renderSettings();
+    fillProducts("delivery-sku", state.products, labels); fillProducts("sale-sku", state.products, labels);
+    if (!initialized) { byId("date").value = state.as_of; ensureLot(); setSalePrice(); initialized = true; }
+    set("configuration", JSON.stringify(environment, null, 2)); set("metadata", JSON.stringify(metadata, null, 2)); set("raw-record", JSON.stringify(report, null, 2));
+    byId("content").hidden = false; ready = true;
+    kindFields();
+  };
+  const fetchState = async () => {
+    const response = await fetch("/api/state", {cache: "no-store", credentials: "same-origin"});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "The saved accounts could not be loaded.");
+    render(data);
+  };
+  const fetchSession = async () => {
+    const response = await fetch("/api/session", {cache: "no-store", credentials: "same-origin"});
+    const session = await response.json();
+    if (!response.ok || typeof session.token !== "string" || !session.token) throw new Error("The local session could not be established.");
+    token = session.token;
+  };
+  const refresh = async () => {
+    if (busy) return;
+    busy = true; error(""); controls();
+    try {
+      if (!token) await fetchSession();
+      await fetchState();
+      restorePending();
+      set("status", pending ? "Accounts refreshed. The pending transaction still needs confirmation; retry the same transaction." : "Saved accounts loaded.");
+    } catch (failure) {
+      ready = false;
+      error("Cannot refresh saved accounts: " + failure.message);
+      set("status", "Connection or saved-state error. No new transaction was submitted.");
+    } finally { busy = false; controls(); }
+  };
+  const createPending = () => {
+    const kind = byId("kind").value, date = byId("date").value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("Choose the transaction date.");
+    let details;
+    if (kind === "delivery") {
+      const lot = byId("lot-id").value.trim();
+      if (!/^[A-Za-z0-9_.-]{1,64}$/.test(lot)) {
+        byId("delivery-reference").open = true; byId("lot-id").focus();
+        throw new Error("Enter a lot identifier of 1–64 letters, digits, hyphens, underscores or dots.");
+      }
+      details = {sku: byId("delivery-sku").value, lot_id: lot, units: readUnits("delivery-units"), unit_cost: readMoney("unit-cost", true)};
+    } else if (kind === "sale") {
+      details = {sku: byId("sale-sku").value, units: readUnits("sale-units"), unit_price: readMoney("unit-price")};
+    } else if (kind === "expense") {
+      const description = byId("expense-description").value.trim();
+      if (!description) throw new Error("Describe the new expense.");
+      details = {category: byId("expense-category").value, description, amount: readMoney("expense-amount"), settlement: byId("settlement").value};
+    } else throw new Error("Choose a supported activity.");
+    const id = crypto.randomUUID();
+    return {id, uncertain: false, body: JSON.stringify({expected_revision: report.revision, event: {
+      schema_version: "exchange.transaction.v1", id, environment_id: report.environment.environment_id, date, kind, details
+    }})};
+  };
+  const clearRecordedFields = kind => {
+    const fields = {sale: ["sale-units"], delivery: ["delivery-units", "unit-cost", "lot-id"],
+      expense: ["expense-description", "expense-amount"]};
+    for (const id of fields[kind]) byId(id).value = "";
+    byId("date").value = report.state.as_of;
+    if (kind === "delivery") ensureLot();
+    if (kind === "sale") setSalePrice();
+    updateEntry();
+  };
+  const sendPending = async () => {
+    if (!pending || busy) return;
+    busy = true; error(""); set("status", "Saving transaction; waiting for confirmation…"); controls();
+    try {
+      const response = await fetch("/api/transactions", {method: "POST", credentials: "same-origin",
+        headers: {"Content-Type": "application/json", "X-Exchange-Token": token}, body: pending.body});
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status >= 500 || data.status !== "error") throw new Error(data.message || "The service could not confirm the transaction.");
+        if (response.status === 401 || response.status === 403) {
+          pending.uncertain = true;
+          token = null;
+          await fetchSession();
+          error("The local session changed. The pending request was preserved; retry the same transaction with the renewed session.");
+          set("status", "Session renewed. No new transaction was created; confirmation is still pending.");
+          return;
+        }
+        const verifiedNotRecorded = response.status === 409 && data.error_type === "conflict" && data.commit_status === "not_recorded";
+        if (pending.uncertain && !verifiedNotRecorded) {
+          error("The pending request was rejected: " + (data.message || "Request rejected.") + " Its earlier result remains unconfirmed; its identity is preserved.");
+          set("status", "Review the saved history and retry the same transaction. Do not enter it again under a new identity.");
+          if (response.status === 400 || response.status === 409) {
+            try { await fetchState(); } catch (failure) { ready = false; error("Pending identity preserved. Refresh failed: " + failure.message); }
+          }
+          return;
+        }
+        const rejected = pending.id; clearPending();
+        error("Transaction " + rejected + " was not recorded: " + (data.message || "Request rejected."));
+        set("status", "Review the retained form entries before submitting again.");
+        if (response.status === 400 || response.status === 409) {
+          try { await fetchState(); } catch (failure) { ready = false; error("Transaction was rejected. Refresh failed: " + failure.message); }
+        }
+        restorePending();
+        if (pending) set("status", "Another retained request needs confirmation before new activity can be entered.");
+        return;
+      }
+      if (!["recorded", "already_recorded"].includes(data.commit_status)) throw new Error("The service response did not confirm a saved transaction.");
+      render(data);
+      const confirmedEvent = JSON.parse(pending.body).event, confirmed = describeEvent(confirmedEvent);
+      clearPending(); clearRecordedFields(confirmedEvent.kind); restorePending();
+      set("status", (data.commit_status === "already_recorded" ? "Previously recorded transaction confirmed: " : "Recorded transaction: ") + confirmed +
+        (pending ? ". Another retained request needs confirmation; retry it before entering more activity." : ". Accounts are updated."));
+    } catch (failure) {
+      if (pending) pending.uncertain = true;
+      error("The result is uncertain: " + failure.message);
+      set("status", "No confirmation received. The transaction may already be saved. Retry the same transaction to confirm.");
+    } finally { busy = false; controls(); }
+  };
+  byId("transaction-form").addEventListener("submit", event => {
+    event.preventDefault();
+    if (!ready || busy || pending) return;
+    error("");
+    try {
+      restorePending();
+      if (pending) { controls(); error("A retained request needs confirmation first. Retry that transaction."); return; }
+      const candidate = createPending();
+      persistPending(candidate);
+      pending = candidate;
+    } catch (failure) { error(failure.message); return; }
+    void sendPending();
+  });
+  byId("skip-workspace").addEventListener("click", event => { event.preventDefault(); byId("view-title").focus(); });
+  byId("kind").addEventListener("change", kindFields);
+  byId("sale-sku").addEventListener("change", setSalePrice);
+  byId("lot-id").addEventListener("invalid", () => { byId("delivery-reference").open = true; });
+  for (const id of ["delivery-sku", "settlement", "expense-category"]) byId(id).addEventListener("change", updateEntry);
+  for (const id of ["sale-units", "unit-price", "delivery-units", "unit-cost", "expense-amount"]) byId(id).addEventListener("input", updateEntry);
+  for (const screen of screens) byId("nav-" + screen).addEventListener("click", () => navigate(screen));
+  for (const kind of ["sale", "delivery", "expense"]) {
+    byId("choose-" + kind).addEventListener("click", () => chooseActivity(kind));
+    byId("action-" + kind).addEventListener("click", () => {
+      if (!ready || busy || pending) return;
+      chooseActivity(kind); navigate("record");
+    });
+  }
+  byId("home-accounts").addEventListener("click", () => navigate("advanced"));
+  byId("home-activity").addEventListener("click", () => navigate("activity"));
+  window.addEventListener("hashchange", () => {
+    const name = window.location.hash.replace(/^#/, "");
+    if (name !== activeScreen) showScreen(name, true);
+  });
+  byId("refresh").addEventListener("click", () => { void refresh(); });
+  byId("retry").addEventListener("click", () => { void sendPending(); });
+  window.addEventListener("beforeunload", event => { if (pending) { event.preventDefault(); event.returnValue = ""; } });
+  window.addEventListener("storage", event => {
+    if (!report || pending || busy || !event.key?.startsWith(outboxPrefix())) return;
+    try { restorePending(); } catch (failure) { ready = false; error(failure.message); }
+    controls();
+  });
+  for (const button of document.querySelectorAll("[data-help]")) wireHelp(button, byId(button.getAttribute("data-help")));
+  showScreen((window.location.hash || "").replace(/^#/, ""));
+  controls(); void refresh();
+})();
+</script>
+</body>
+</html>

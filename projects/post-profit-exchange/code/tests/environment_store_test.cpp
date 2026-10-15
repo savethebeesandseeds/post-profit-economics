@@ -61,11 +61,14 @@ void direct_idydb_type_fixture(const fs::path& path) {
   }
 }
 
-void directly_verify_text(const fs::path& path, const std::string& expected) {
+void directly_verify_text(const fs::path& path, const std::string& expected,
+                          const std::string& passphrase = {}) {
   idydb* handle = nullptr;
   try {
-    require(idydb_open(path.string().c_str(), &handle, IDYDB_READONLY) == IDYDB_SUCCESS,
-            "open adapter output directly with IdyDB");
+    const int opened = passphrase.empty()
+        ? idydb_open(path.string().c_str(), &handle, IDYDB_READONLY)
+        : idydb_open_encrypted(path.string().c_str(), &handle, IDYDB_READONLY, passphrase.c_str());
+    require(opened == IDYDB_SUCCESS, "open adapter output directly with IdyDB");
     require(idydb_extract(&handle, 1, 1) == IDYDB_DONE,
             "envelope is in IdyDB cell (1,1)");
     require(idydb_retrieved_type(&handle) == IDYDB_CHAR, "envelope is a text cell");
@@ -297,6 +300,132 @@ int main() {
       retained_pending |= entry.path().filename().string().find(failed_prefix) == 0;
     require(retained_pending, "partial pending file is retained for inspection");
     require(bytes(marker) == "preserve interrupted attempt", "unrelated pending marker is preserved");
+
+    // Encryption uses IdyDB's native authenticated format; exact account text,
+    // atomic publication and compare-before-write remain the adapter contract.
+    const auto encrypted = directory / "encrypted.idydb";
+    const std::string key = "test-only-key-with-no-operational-value";
+    const auto private_temp_prefix = "exchange-ciphertext-" + std::to_string(::getpid()) + ".";
+    create_environment_store(encrypted, payload, key);
+    const auto encrypted_bytes = bytes(encrypted);
+    require(encrypted_bytes.substr(0, 8) == "IDYDBENC", "saved bytes are native IdyDB ciphertext");
+    require(encrypted_bytes.find("cash_minor") == std::string::npos &&
+            encrypted_bytes.find("9223372036854775807") == std::string::npos &&
+            encrypted_bytes.find("Sample caf") == std::string::npos,
+            "encrypted backing does not expose account JSON");
+    require(read_environment_store(encrypted, key) == payload,
+            "encrypted reopen preserves exact integer, decimal and text spelling");
+    directly_verify_text(encrypted, payload, key);
+    require(bytes(encrypted) == encrypted_bytes, "encrypted readonly opens preserve exact ciphertext");
+    struct stat encrypted_metadata {};
+    require(::stat(encrypted.c_str(), &encrypted_metadata) == 0 &&
+            (encrypted_metadata.st_mode & 0777) == 0600,
+            "encrypted database remains private to its owner");
+
+    rejects([&] { read_environment_store(encrypted, "wrong-key"); },
+            "wrong encryption key is refused");
+    rejects([&] { read_environment_store(encrypted); },
+            "encrypted database requires the key; no plaintext fallback");
+    rejects([&] { replace_environment_store(encrypted, payload, replacement, "wrong-key"); },
+            "wrong-key write fails before creating a pending replacement");
+    rejects([&] { replace_environment_store(encrypted, payload, replacement); },
+            "missing-key write cannot downgrade encryption");
+    rejects([&] { create_environment_store(encrypted, replacement, key); },
+            "encrypted repeat initialization does not overwrite saved accounts");
+    require(bytes(encrypted) == encrypted_bytes, "all rejected key operations preserve original bytes");
+
+    const auto plain_before_encrypted_read = bytes(store);
+    rejects([&] { read_environment_store(store, key); },
+            "encrypted mode refuses a plaintext database");
+    rejects([&] { replace_environment_store(store, current, replacement, key); },
+            "encrypted write never silently migrates a plaintext database");
+    require(bytes(store) == plain_before_encrypted_read, "mode mismatch preserves plaintext bytes");
+    rejects([&] { create_environment_store(missing, payload, std::string("one\0two", 7)); },
+            "NUL-containing key is rejected rather than silently truncated");
+    require(!fs::exists(missing), "invalid key creates no database");
+
+    const auto encrypted_link = directory / "encrypted-link.idydb";
+    fs::create_symlink(encrypted, encrypted_link);
+    rejects([&] { read_environment_store(encrypted_link, key); },
+            "encrypted read also refuses a symlink");
+    rejects([&] { replace_environment_store(encrypted_link, payload, replacement, key); },
+            "encrypted replacement also refuses a symlink");
+
+    // Pin the old ciphertext inode before publication. Both generations must
+    // remain independently decryptable with precisely their original accounts.
+    const int encrypted_old = ::open(encrypted.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    require(encrypted_old >= 0, "pin original encrypted database");
+    try {
+      replace_environment_store(encrypted, payload, replacement, key);
+      directly_verify_text("/proc/self/fd/" + std::to_string(encrypted_old), payload, key);
+    } catch (...) {
+      ::close(encrypted_old);
+      throw;
+    }
+    ::close(encrypted_old);
+    require(read_environment_store(encrypted, key) == replacement,
+            "encrypted replacement publishes the exact new accounts");
+    require(bytes(encrypted) != encrypted_bytes, "encrypted replacement publishes new ciphertext");
+    const auto encrypted_after_update = bytes(encrypted);
+    bool encrypted_conflict = false;
+    try { replace_environment_store(encrypted, payload, current, key); }
+    catch (const StoreConflict&) { encrypted_conflict = true; }
+    require(encrypted_conflict, "encrypted stale revision remains a distinct StoreConflict");
+    require(bytes(encrypted) == encrypted_after_update, "encrypted conflict preserves saved ciphertext");
+
+    const auto failed_encrypted_writer = ::fork();
+    require(failed_encrypted_writer >= 0, "fork bounded failed encrypted writer");
+    if (failed_encrypted_writer == 0) {
+      ::signal(SIGXFSZ, SIG_IGN);
+      // The current small envelope fits. The replacement's encrypted staging
+      // exceeds this limit and must never touch the published ciphertext.
+      const struct rlimit limit {1024, 1024};
+      if (::setrlimit(RLIMIT_FSIZE, &limit) != 0) ::_exit(40);
+      try {
+        replace_environment_store(encrypted, replacement, std::string(5000, 'z'), key);
+        ::_exit(41);
+      } catch (const std::exception& error) {
+        ::_exit(std::string(error.what()).find("pending database retained") != std::string::npos
+                    ? 0 : 42);
+      }
+    }
+    int failed_encrypted_status = 0;
+    require(::waitpid(failed_encrypted_writer, &failed_encrypted_status, 0) ==
+                failed_encrypted_writer &&
+            WIFEXITED(failed_encrypted_status) && WEXITSTATUS(failed_encrypted_status) == 0,
+            "failed encrypted staging reports retained evidence");
+    require(bytes(encrypted) == encrypted_after_update,
+            "failed encrypted staging preserves published ciphertext exactly");
+    require(read_environment_store(encrypted, key) == replacement,
+            "reopen after encrypted write failure retains saved accounts");
+    for (const auto& entry : fs::directory_iterator("/dev/shm"))
+      require(entry.path().filename().string().find("exchange-ciphertext-" +
+                  std::to_string(failed_encrypted_writer) + ".") != 0,
+              "failed encrypted writer cleans its private RAM files");
+
+    // Tampering is authenticated on read. Neither failed read nor failed update
+    // is allowed to repair, truncate or replace the evidence.
+    const auto tampered = directory / "tampered.idydb";
+    std::string damaged = encrypted_after_update;
+    damaged.back() ^= 1;
+    { std::ofstream output(tampered, std::ios::binary); output.write(damaged.data(), damaged.size()); }
+    rejects([&] { read_environment_store(tampered, key); }, "tampered ciphertext is refused");
+    rejects([&] { replace_environment_store(tampered, replacement, payload, key); },
+            "tampered ciphertext cannot be updated");
+    require(bytes(tampered) == damaged, "authentication failures preserve damaged evidence");
+
+    const auto huge_encrypted = directory / "oversize.idydb";
+    { std::ofstream output(huge_encrypted, std::ios::binary); output << std::string(128 * 1024 + 1, 'x'); }
+    rejects([&] { read_environment_store(huge_encrypted, key); },
+            "encrypted read rejects ciphertext above the size bound");
+
+    const auto largest_encrypted = directory / "largest-encrypted.idydb";
+    create_environment_store(largest_encrypted, at_limit, key);
+    require(read_environment_store(largest_encrypted, key) == at_limit,
+            "maximum encrypted payload reopens exactly within the ciphertext bound");
+    for (const auto& entry : fs::directory_iterator("/dev/shm"))
+      require(entry.path().filename().string().find(private_temp_prefix) != 0,
+              "successful and rejected encrypted operations clean their own temporary RAM files");
 
     fs::remove_all(directory);
     std::cout << "Exchange environment storage: " << checks << " checks passed\n";

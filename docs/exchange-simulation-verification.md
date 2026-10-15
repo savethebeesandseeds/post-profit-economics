@@ -459,6 +459,257 @@ Database internals, simulated economic rules and existing compiled WASM were
 unchanged. Private environments, database files and generated reports are
 excluded from the source archive and the normal Git workflow.
 
+## 2026-10-15 C++ application server
+
+The connected service now uses `exchange_server` and unmodified cpp-httplib
+v0.61.0, pinned to commit `c419c904da4ed0d057f169c225c58cc795c07e4d`.
+The Python server was removed. Native HTTP handlers call the existing exchange
+environment APIs directly; accounting, storage, pricing and simulation sources
+were not changed. Python remains development/test/packaging tooling only.
+
+A fresh Release build in the managed Debian container at
+`/tmp/exchange-cpp-http-20261015/native` compiled all targets. Results:
+
+- **9/9 HTTP integration cases** passed against the actual C++ server with
+  isolated synthetic environments. Existing delivery, FIFO sale and paid/unpaid
+  expense assertions were retained. Cases cover safe repeated IDs, competing
+  revisions, concurrent identical retries, process restart and session renewal,
+  malformed/duplicate JSON and HTTP headers, body limits, incomplete/chunked
+  requests, closed routes, mismatched environment and occupied-port startup.
+  Ordinary termination returned success.
+- A held external writer lock produced an uncertain-completion response after
+  the twenty-second budget. Releasing it and retrying the same expense ID left
+  exactly one recorded expense; later retries preserved database bytes.
+- **21/21 other CTest cases** passed, including exchange accounting/storage,
+  simulator, EWMA, optimizer protocol and IdyDB checks. The HTTP integration
+  executable suite was run separately rather than repeated through CTest.
+- The connected UI's Node contract checks passed, including durable outbox,
+  session renewal and uncertain-save retry behavior.
+- The packaged HTML checks passed against the fresh native simulator. Existing
+  WebAssembly was reused; its runtime SHA-256 remains
+  `5d736b58711ae6cc2cf3a029733a92fa6558812fb267d98f31388996420fb9a1`.
+
+The authoritative per-environment launcher reused container
+`1c7232e713cb2c7e8449a2b11bd7f5a15df4fc634f529cea8d8e7c15de5083a1`,
+verified the changed setup marker, and installed **zero** packages. Its existing
+Debian image, binds/mask, loopback publication, device restrictions and restart
+policy were preserved. On verification, PID 1 was `exchange_server`, no Python
+service was running, and `http://127.0.0.1:8766/api/state` returned HTTP 200 with
+`Server: ExchangeLocal/2`, environment `vendor-operation` and revision 0.
+The existing environment database SHA-256 remained
+`0b0bb11475fc7a2dad9558c9f65e612525f0900db83a9cca90048786473c72bd`.
+
+Tests did not insert transactions into the vendor environment. These checks
+establish local transport/account consistency, not worker authentication, remote
+deployment, production capacity, backup recovery or economic outcomes.
+Application wait expiry does not cancel accepted work. An external storage lock
+can also delay graceful shutdown; see the documented service bounds.
+Browser checks were deterministic DOM/API checks, not visual browser testing.
+
+## 2026-10-15: encrypted environment and configuration launcher
+
+The operation moved to
+`projects/post-profit-exchange/environments/vendor_0x01/`. Its v2 `exchange.cfg`
+selects the workspace, loopback endpoint and external key-file path. Runtime
+settings are excluded from persisted/public business configuration. The
+Windows executable delegates to the authoritative container launcher; the C++
+server and CLI run in Debian. Accounting, economic policy and simulator defaults
+remain unchanged.
+
+| Executed check | Result |
+| --- | --- |
+| Native regression build | **23/23 CTest tests passed**, 33.13 seconds, in `/tmp/exchange-cpp-http-20261015/native`. |
+| Encrypted environment | Final **9/9 integration cases passed**, 4.91 seconds, after key-file newline and port-validation corrections. The storage suite passed **129 checks**. |
+| Existing HTTP behavior | **9/9 cases passed**, 20.50 seconds, including uncertainty and same-ID retry. |
+| Browser contracts | Connected transaction and saved environment-view Node checks passed inside Debian. These are deterministic interface checks, not a complete visual review. |
+| Launcher | Linux cross-build succeeded; **8 argument cases** and **13 PowerShell rejection cases** passed. The actual default executable action confirmed readiness and opened the browser. |
+
+Launch testing found and fixed Windows PowerShell 5 inline-shell quoting in the
+setup-marker check. The check now passes Docker arguments directly. The finished
+executable's SHA-256 is
+`27fa6843777e04e30f43ee512e79603a569883728765946c8ce272d50ddbd2b5`.
+
+The explicit migration preserved revision **0**, cash **100,000**, reserve
+**5,000**, **80** stock units valued at **9,750**, obligations **1,000**, and net
+assets **108,750**, all monetary amounts in minor EUR units. It introduced no
+trading records. The original plaintext database hash was
+`0b0bb11475fc7a2dad9558c9f65e612525f0900db83a9cca90048786473c72bd`.
+The encrypted migration recovery reopened to exactly the original stored payload.
+
+New container `post-profit-exchange-vendor_0x01`, ID
+`199ac623559525cebb5aadd7790d463a3f26bae3dfc86fc0235bec22c1a7f801`,
+passed live readiness and restart verification at
+[http://127.0.0.1:8766/](http://127.0.0.1:8766/). Its read-only secret bind,
+empty source-environment mask and selected writable operation were verified.
+The generated key resides outside the checkout in the Windows user profile,
+with user-only access checked. Runtime settings and secret contents were absent
+from the public state and service logs. The service runner builds both the
+server and native environment CLI; its CLI help was checked.
+
+After native encrypted migration and account/recovery verification, the old
+environment folder was retired before the new container was created, so its
+read-only source mount could not expose the old plaintext files. The approved
+old container `1c7232e713cb2c7e8449a2b11bd7f5a15df4fc634f529cea8d8e7c15de5083a1`
+remained stopped until the new service passed live readiness and restart
+verification; it was then removed. The
+[operating contract](../projects/post-profit-exchange/doc/OPERATING_ENVIRONMENT.md)
+and [launch instructions](../projects/post-profit-exchange/doc/APPLICATION_SERVICE.md)
+describe the current arrangement.
+
+These checks establish this local migration and launch, not production
+readiness. The launcher still requires the checkout, Docker Desktop and the
+documented local image. Encryption covers the database and migration recovery,
+not JSON inputs, explicit exports or browser state. Worker authentication, key
+rotation and a complete backup/restoration workflow remain unimplemented.
+
+## 2026-10-15: native Windows exchange preparation
+
+The exchange-owned application now has an isolated MinGW x86_64 build,
+Windows configuration/key/path handling, direct C++ server startup with browser
+launch, graceful console shutdown, and an encrypted-only Windows storage adapter.
+The Windows adapter calls the existing IdyDB C API; no IdyDB source was ported,
+patched or replaced. There is no database substitute. AMPL subprocess portability
+is excluded from this build.
+
+At this preparation checkpoint, no Windows IdyDB package was integrated, so
+the native server was not linked. The later compatibility review below records
+the SDK now available. Its manifest must identify the exact
+header, binary dependencies, licenses and library evidence. The library owns
+decrypted working storage, encryption, atomic publication and Windows durability.
+The exchange validates paths and permissions, serializes writers, compares
+the exact stored envelope, checks return statuses and verifies acknowledged writes
+by reopening. Errors after a possible publication remain uncertain outcomes.
+
+Verification completed in the existing Debian development container:
+
+- The existing Linux regression suite passed **25/25 CTest cases**, 34.85 seconds,
+  including encrypted storage and all nine HTTP integration cases. Accounting,
+  economic behavior and the browser interface retain their existing implementation.
+- The real exchange-owned Windows server, environment CLI, accounting and storage
+  sources cross-compiled. Without the supplied library, no native application
+  executable is linked.
+- The final Windows CTest run had **6 cases pass and 1 case skipped**. Its
+  package/receipt validation case includes **18 checks**.
+- Independent Windows executable tests ran under Wine: unchanged accounting
+  (**112 checks**), configuration/key/report handling (**45 checks**), server
+  randomness/Unicode handling, Ctrl+C handling and readiness-output separation.
+- The Windows filesystem/security executable completed **32 checks**, with two
+  explicitly unverified Wine cases: directory DELETE-sharing enforcement and a
+  genuine Windows reparse fixture. The CTest case is marked skipped; a native
+  acceptance receipt must reject any skipped protection. Wine is not NTFS
+  durability evidence.
+- Build-tool tests exercise dependency hashes, required library contracts and
+  release acceptance gates using metadata-only fixtures. They do not execute
+  a fake database or establish that a supplied library meets its contract.
+- Real-library encrypted-storage and complete Windows HTTP/accounting acceptance
+  tests were prepared. The storage test source cross-compiled, but these tests
+  have not run against a Windows IdyDB library. The PowerShell acceptance script
+  is preparation for a future approved native test environment, not a host
+  execution performed during this phase.
+
+The refreshed standalone HTML passed its embedded-WASM/native accounting and
+source-file contract checks. The connected transaction interface contract tests
+also passed. These are deterministic browser/DOM checks, not a new visual review.
+The WebAssembly runtime was reused without changing its compiled bytes.
+
+At the independent verification checkpoint, the IdyDB tree matched the
+start-of-task SHA256 inventory: all **17 files were unchanged**. Later concurrent
+edits changed only its README and REVIEW documents and added future IdyDB source
+paths to the exchange archive manifest and its test. Those edits were not made
+by this task and were preserved. At that checkpoint, the IdyDB implementation,
+header and tests also matched the original inventory. The separate IdyDB session
+continued editing after these checks; this phase's results describe the tested
+checkpoint, not acceptance of that subsequent database update.
+
+A final documentation-only archive refresh then failed because those newly
+listed upstream platform/package/fixture files were not present, first reporting
+`tools/idydb/upstream/cmake/idydbConfig.cmake.in`. The previously tested HTML was
+preserved as a checkpoint snapshot. The provider subsequently supplied the
+listed source files; the documentation/source-bundle cleanup below supersedes
+that temporary export blockage. No missing library file or fixture was fabricated.
+
+The running vendor container retained ID
+`199ac623559525cebb5aadd7790d463a3f26bae3dfc86fc0235bec22c1a7f801`,
+revision **0** and its original accounts. Its encrypted database SHA256 remained
+`754e94ef7a328e5519363b170c322f6155062461c3cdc9c30d62631e7f666a1d`.
+No transaction or migration was applied to it.
+
+The existing Docker launcher remains separate and unchanged by native build
+output. A future vendor package will run directly on Windows without Docker or
+WSL, but this phase does not deliver that runnable package. Real native NTFS
+acceptance, encrypted cross-platform compatibility and the supplied library's
+failure/durability evidence remain outstanding. The exact handoff is documented
+in [WINDOWS_NATIVE.md](../projects/post-profit-exchange/doc/WINDOWS_NATIVE.md).
+
+## 2026-10-15: IdyDB Windows compatibility review
+
+The review inspected `C:\Work\idydb` and its existing managed `idydb-dev`
+container without modifying the database or performing a general database
+quality audit. The provider has an x64 Windows backend, BIG static/shared SDKs,
+the seven C functions used by exchange, and an unchanged text-cell capacity
+large enough for the 60 KiB exchange envelope.
+
+The installed static SDK was copied directly between the two managed containers
+for a bounded compatibility check. No SDK or compiler was installed on Windows.
+Exchange's existing `x86_64-w64-mingw32-g++-posix` (GCC 12 POSIX) successfully
+compiled and linked a consumer referencing all seven API functions against the
+provider's BIG static library and static OpenSSL Crypto. The provider uses
+MinGW GCC 14; this result applies to these exact copied artifacts:
+
+| Input | SHA-256 |
+| --- | --- |
+| `db.h` | `aa4af0e4c7ca27b61e1f51939df1b1e05e9d5edc3286051f2d7a9c6de30e0f77` |
+| `libidydb.a` | `05c7da9ea89cc0b8a3e2949e3b8bd8b8eb02b0a5ad06f0bb8a9b4d54775b7069` |
+| `libcrypto.a` | `a9c633abc2e5709a540d26edfc192c6d81d09dd840c2366ca364d68f1d94e879` |
+
+The link used `IDYDB_SIZING_MODE=3`, C++17, static GCC/C++ runtimes and
+`advapi32`, `ws2_32`, `crypt32` and `gdi32` system libraries. Object inspection
+identified an x64 PE executable importing only `ADVAPI32.dll`, `CRYPT32.dll`,
+`KERNEL32.dll`, `msvcrt.dll`, `USER32.dll` and `WS2_32.dll`. The executable was
+**not run**. This is a successful API/link check, not a native exchange release,
+encrypted runtime test or end-to-end accounting acceptance.
+
+The provider's existing native logs cover four build configurations and
+Linux-created compatibility fixture reads. The native symlink fixture explicitly
+reported missing creation privilege. Source and SDK files were being updated
+during review; earlier test logs must not be presented as testing later builds.
+The exchange still needs an identified SDK/evidence package, its `gdi32` allowlist
+entry, resolution of the exact `checked_windows_flush_and_close` contract, and
+native security/storage/HTTP acceptance. No manifest assertion was changed
+to pass a gate.
+
+The [Windows handoff](../projects/post-profit-exchange/doc/WINDOWS_NATIVE.md)
+records the available SDK paths and responsibility boundary. In particular,
+IdyDB's private Windows decrypted working file can reach disk. Its documented
+flush/replacement contract is not a RAM-only, secure-erasure or universal
+power-loss promise.
+
+## 2026-10-15: documentation and source-bundle cleanup
+
+Current guides now distinguish available Windows IdyDB support and a successful
+link check from the still-pending native application acceptance and release.
+The historical checkpoints above retain their original test scope.
+
+The temporary seven-file link-check directory (copied SDK/crypto inputs, source,
+unexecuted executable and empty link logs) was removed after checking the input
+hashes recorded above. Two generated Python bytecode cache files were removed
+from `code/windows/__pycache__`. This is targeted scratch-file cleanup, not Docker
+object, build-volume, database, key or live-environment cleanup.
+
+The temporary standalone export passed the existing Node contract suite:
+embedded WebAssembly/native history and ledger parity, replay, failure cases,
+central configuration and packaged-source checks. ZIP CRC and byte-for-byte
+source comparison passed for all 189 repository source entries. The final
+export includes these updated notes; its archive is checked again before
+publication. The earlier missing-file export blockage is resolved.
+
+The compiled WebAssembly runtime remains
+`5d736b58711ae6cc2cf3a029733a92fa6558812fb267d98f31388996420fb9a1`.
+No compiler/runtime code, economic behavior, UI code or dependency-validation
+rules changed during this cleanup. The IdyDB import and the live encrypted
+database were checked against the start-of-cleanup hashes. These checks do not
+claim new native Windows application acceptance.
+
 ## Evidence limits and handoff
 
 These are synthetic implementation and consistency checks. EWMA, declared consumer

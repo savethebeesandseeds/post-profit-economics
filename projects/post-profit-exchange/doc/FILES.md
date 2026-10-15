@@ -10,14 +10,16 @@ defines an operation's `exchange.cfg`, metadata, opening JSON import, IdyDB
 database, ordered transaction records and generated report. The native
 `transact` command records paid deliveries, cash sales and new paid/unpaid
 expenses; inspection replays the saved events. The connected shared interface
-uses this same command through the [local application service](APPLICATION_SERVICE.md),
+uses these same native functions through the [local application service](APPLICATION_SERVICE.md),
 with one container per operation. The selected environment's configuration and
 IdyDB files are writable at `/operation`; shared source is read-only. Separate
 container/port identities do not create a second record schema or duplicate accounts.
 The bounded v2 store and same-ID retries are documented in that environment
 contract; broader recovery/backup work remains
 [roadmap milestone 2](ROADMAP.md#2-keep-reliable-operational-records-with-idydb).
-Its `exchange.environment.v1` configuration is distinct from the simulator's
+Its `exchange.environment.v2` configuration adds runtime settings to the legacy
+v1 business contract; runtime paths and secrets are excluded from persisted
+accounting and public state. This configuration is distinct from the simulator's
 `exchange.run.v1` configuration. Neither command silently switches modes.
 The simulation file contract below remains unchanged.
 

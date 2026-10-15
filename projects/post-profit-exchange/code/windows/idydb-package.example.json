@@ -1,0 +1,41 @@
+{
+  "schema_version": "exchange.idydb-windows-package.v1",
+  "architecture": "x86_64",
+  "consumer_abi": "mingw-w64-x86_64",
+  "sizing_mode": "BIG",
+  "header": {
+    "path": "include/db.h",
+    "sha256": "REPLACE_WITH_SHA256"
+  },
+  "library": {
+    "path": "lib/libidydb.a",
+    "sha256": "REPLACE_WITH_SHA256",
+    "kind": "static"
+  },
+  "link_libraries": [],
+  "system_libraries": [],
+  "runtime_dlls": [],
+  "licenses": [
+    {
+      "path": "licenses/idydb.txt",
+      "sha256": "REPLACE_WITH_SHA256"
+    }
+  ],
+  "contract": {
+    "utf8_paths": false,
+    "encrypted_readonly_rejects_plaintext": false,
+    "unchanged_encrypted_format": false,
+    "safe_decrypted_working_storage": false,
+    "atomic_encrypted_publication": false,
+    "checked_windows_flush_and_close": false,
+    "uncertain_commit_reported_as_error": false,
+    "failed_open_discard_safe": false,
+    "compatible_windows_file_sharing": false,
+    "restrictive_acl_preserved": false,
+    "encrypted_writable_open_no_change": false
+  },
+  "evidence": {
+    "path": "evidence/windows-validation.md",
+    "sha256": "REPLACE_WITH_SHA256"
+  }
+}

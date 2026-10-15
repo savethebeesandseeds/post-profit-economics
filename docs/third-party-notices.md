@@ -74,3 +74,10 @@ pricing code, runtime notices and corresponding source, without AMPL binaries.
 The production project's `dist/` HTML is another explicit exception; it embeds
 only its MIT simulation/experiment code, JSON dependency, runtime notices and
 corresponding source. It does not link the pricing engine.
+
+- cpp-httplib v0.61.0 (MIT): the native exchange HTTP server uses an unmodified
+  vendored header from commit `c419c904da4ed0d057f169c225c58cc795c07e4d`.
+  The [source provenance and hashes](../projects/post-profit-exchange/code/third_party/cpp-httplib/PROVENANCE.md)
+  and [upstream license](../projects/post-profit-exchange/code/third_party/cpp-httplib/LICENSE)
+  accompany it. It is not linked into the WebAssembly simulator; its source and
+  license are included in the corresponding-source archive.

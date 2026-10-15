@@ -1,0 +1,10 @@
+# Environment instances may contain private data; distribute only this explicit example.
+/*
+!/.gitignore
+!/vendor_0x01/
+/vendor_0x01/*
+!/vendor_0x01/exchange.cfg
+!/vendor_0x01/metadata.json
+!/vendor_0x01/records/
+/vendor_0x01/records/*
+!/vendor_0x01/records/opening.json

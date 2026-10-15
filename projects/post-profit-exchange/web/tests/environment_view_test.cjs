@@ -89,9 +89,9 @@ assert.equal(run.elements.get("content").hidden, false);
 assert.equal(run.elements.get("error").hidden, true);
 assert.equal(run.context.injected, undefined, "malicious product text never executes");
 assert.equal(run.text("display-name"), "Example exchange");
-assert.equal(run.document.title, "Example exchange · Exchange environment snapshot");
+assert.equal(run.document.title, "Example exchange · Store report");
 assert.equal(run.text("description"), "Test records only.");
-assert.equal(run.text("provenance"), "Synthetic example records");
+assert.equal(run.text("provenance"), "Example data");
 assert.equal(run.text("environment-id"), "Environment: example-one");
 assert(run.text("as-of").includes("2026-10-14"));
 assert(run.text("snapshot-at").includes(fixture.snapshot_at));
@@ -100,7 +100,7 @@ for (const [id, expected] of [
   ["inventory-value", "97.50 EUR"], ["obligations-total", "10.00 EUR"], ["cash-unreserved", "950.00 EUR"],
   ["cash-after-obligations", "940.00 EUR"], ["net-assets", "1,087.50 EUR"]
 ]) assert.equal(run.text(id), expected, id);
-assert.equal(run.text("inventory-units"), "85 units in saved stock.");
+assert.equal(run.text("inventory-units"), "85 units in stock.");
 assert.deepEqual(run.rows("products"), [
   [dangerousLabel, "BREAD", "piece", "2.50 EUR", "1.30 EUR"],
   ["Oil", "OIL", "piece", "4.00 EUR", "2.15 EUR"]
@@ -109,7 +109,7 @@ assert.deepEqual(run.rows("lots"), [
   ["BREAD", "bread-1", "50", "1.00 EUR"], ["BREAD", "bread-2", "25", "1.10 EUR"], ["OIL", "oil-1", "10", "2.00 EUR"]
 ]);
 assert.deepEqual(run.rows("obligations"), [["pay-01", "Worker pay", "8.00 EUR"], ["rent-01", "Operating expense", "2.00 EUR"]]);
-assert.deepEqual(run.rows("capabilities").map(row => row[1]), ["Available in application", "Not implemented", "Not implemented", "Not implemented"]);
+assert.deepEqual(run.rows("capabilities").map(row => row[1]), ["Available", "Unavailable", "Unavailable", "Unavailable"]);
 assert.deepEqual(JSON.parse(run.text("configuration")), fixture.environment);
 assert.deepEqual(JSON.parse(run.text("metadata")), fixture.metadata);
 assert.deepEqual(JSON.parse(run.text("raw-record")), fixture);
@@ -128,15 +128,15 @@ assert.deepEqual(run.revoked, ["blob:local-1"]);
   // Intentionally distinct provided totals: the interface must not recompute financial accounts.
   observed.summary.inventory_value = 12345;
   const observedRun = runPage(template.replace("__ENVIRONMENT_JSON__", escapeForScript(observed)));
-  assert.equal(observedRun.text("provenance"), "Observed records");
+  assert.equal(observedRun.text("provenance"), "Recorded data");
   assert.equal(observedRun.text("cash-after-obligations"), "−90,000,000,000.00 EUR");
   assert.equal(observedRun.text("inventory-value"), "123.45 EUR", "uses native summary, not JavaScript accounting");
   const empty = structuredClone(fixture);
   empty.state.products = []; empty.metadata.products = []; empty.state.obligations = [];
   const emptyRun = runPage(template.replace("__ENVIRONMENT_JSON__", escapeForScript(empty)));
   assert.deepEqual(emptyRun.rows("products"), [["No products recorded."]]);
-  assert.deepEqual(emptyRun.rows("lots"), [["No acquisition lots recorded."]]);
-  assert.deepEqual(emptyRun.rows("obligations"), [["No outstanding obligations recorded."]]);
+  assert.deepEqual(emptyRun.rows("lots"), [["No stock batches recorded."]]);
+  assert.deepEqual(emptyRun.rows("obligations"), [["No unpaid costs recorded."]]);
   for (const mutate of [
     report => {report.schema_version = "unsupported";},
     report => {report.state.environment_id = "different-environment";},
@@ -148,7 +148,7 @@ assert.deepEqual(run.revoked, ["blob:local-1"]);
     const failed = runPage(template.replace("__ENVIRONMENT_JSON__", escapeForScript(invalid)));
     assert.equal(failed.elements.get("content").hidden, true, "invalid report is not displayed as usable");
     assert.equal(failed.elements.get("error").hidden, false);
-    assert(failed.text("error").startsWith("Cannot display this snapshot: "));
+    assert(failed.text("error").startsWith("Cannot display this report: "));
     assert.equal(failed.elements.get("download").disabled, true);
   }
   if (process.argv[3]) {

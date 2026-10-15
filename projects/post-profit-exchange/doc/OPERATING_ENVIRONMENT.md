@@ -15,16 +15,17 @@ research simulator and its pricing policy remain unchanged.
 
 ## Files belonging to one operation
 
-The checked-in [vendor operation](../code/environments/vendor-operation/exchange.cfg)
+The checked-in [vendor operation](../environments/vendor_0x01/exchange.cfg)
 is an explicitly synthetic example:
 
 ```text
-code/environments/vendor-operation/
-  exchange.cfg             central configuration: identity, currency and paths
+environments/vendor_0x01/
+  exchange.cfg             central configuration: accounts, runtime and key path
   metadata.json            displayed names, catalog and provenance
   records/opening.json     opening position imported once
-  data/exchange.idydb      generated opening position and ordered transactions
-  reports/environment.html generated read-only snapshot
+  data/exchange.idydb       encrypted opening position and ordered transactions
+  data/migration-original.idydb optional encrypted migration recovery
+  reports/environment.html optional plaintext read-only export
 ```
 
 Only the three example input files are distributed. Generated databases, lock
@@ -38,30 +39,51 @@ Do not copy a populated example database and relabel it as observed data.
 
 ## Open the accounts
 
-Build inside the managed Linux container using [ENVIRONMENT.md](ENVIRONMENT.md).
-The native build produces `exchange_environment`. From the repository root
-inside that container:
+Use the [application launcher](APPLICATION_SERVICE.md) with the existing
+`exchange.cfg` to open the connected interface. It starts the configured
+container and opens the browser after readiness. The operation's data belongs
+under `environments/`, separate from the application's `code/` and `web/`.
+
+Native commands remain available inside the managed Linux container. Mount the
+external secret read-only at `/run/secrets/exchange.key`, as the application
+launcher does. For an already initialized encrypted environment:
 
 ```sh
-environment_dir=projects/post-profit-exchange/code/environments/vendor-operation
-/tmp/post-profit-exchange/native/exchange_environment initialize "$environment_dir"
-/tmp/post-profit-exchange/native/exchange_environment inspect "$environment_dir"
-/tmp/post-profit-exchange/native/exchange_environment render "$environment_dir" projects/post-profit-exchange/web/operations/environment.template.html
+environment_dir=/operation
+/opt/post-profit-exchange/native/exchange_environment inspect "$environment_dir" --key-file /run/secrets/exchange.key
 ```
 
-Run `initialize` once; it refuses to replace an existing database. Later commands
-read persisted accounts, not a modified opening import. Commands return JSON on
-stdout and diagnostics on stderr. Success exits with 0; errors return JSON and
-exit with 2. Use `--help` for syntax.
+`initialize ENVIRONMENT_DIRECTORY --key-file KEY_PATH` imports an opening once
+and refuses an existing database. It is an explicit preparation step, never a
+side effect of launch. `transact` accepts the same key-file option and reads its
+JSON request from stdin. Commands return JSON on stdout and diagnostics on
+stderr; success exits with 0 and errors return JSON with exit 2.
+
+For an encrypted operation, a report is an explicit plaintext export:
+
+```sh
+/opt/post-profit-exchange/native/exchange_environment render /operation projects/post-profit-exchange/web/operations/environment.template.html --key-file /run/secrets/exchange.key --allow-plaintext-export
+```
+
+Keep exported records in an appropriately private location. Ordinary service
+startup does not generate a report. Use `--help` for the command syntax.
 
 The generated `reports/environment.html` is a **read-only snapshot**. It shows
 the accounts and saved prices at its generation time. Rerun `render` to refresh
 it; opening or refreshing the file neither opens IdyDB nor records activity.
+The main report shows balances, stock, saved selling prices and unpaid costs in
+ordinary store language. Reserve remains identified as part of cash; example
+data and the saved-report date remain visible. Additional balances and formulas,
+purchase batches, and technical configuration/records are available in closed
+details. The shared template owns this presentation; operation metadata and
+accounting records are not rewritten to change the wording.
 
 The **connected operator interface** is the application's shared
-`web/operations/transactions.html`, served by `code/interfaces/serve.py`.
-That local HTTP transport calls the same native commands; it contains no
-accounting model and serves only its declared application routes. Its setup is
+`web/operations/transactions.html`, served by the C++ `exchange_server`
+executable in `code/interfaces/server_main.cpp`. Its cpp-httplib transport calls
+the same environment inspection and transaction functions as the native command
+line, with no Python runtime or subprocess bridge. It contains no accounting
+model and serves only its declared application routes. Its setup is
 documented in [APPLICATION_SERVICE.md](APPLICATION_SERVICE.md).
 The approved launch model uses one container per configured operation, named
 `post-profit-exchange-<environment_id>`. Shared repository source is mounted
@@ -119,9 +141,11 @@ unsent draft is not a saved business record. The durable browser outbox describe
 below applies to requests that have been submitted; an uncertain request remains
 visible and blocks new submissions from every view until resolved.
 
-Advanced settings show the configuration actually loaded by the operation.
-They are explicitly **read-only**: the current application has no configuration
-migration or settings-write command. Moving settings out of the daily workflow
+Advanced settings show the business configuration actually loaded by the operation.
+Host paths, the encryption key location and runtime settings are not exposed by
+the accounts API.
+They are explicitly **read-only**: the current application has no general
+configuration migration or settings-write command. Moving settings out of the daily workflow
 does not add editing support or change the accounting policy. Raw JSON remains
 available for inspection under details rather than filling the landing page.
 
@@ -208,9 +232,18 @@ labels or missing steps as improvements to the shared application.
 
 ## Contracts and persistence
 
-- `exchange.cfg` is strict JSON, schema `exchange.environment.v1`: environment
-  identity, uppercase three-letter currency, two decimal places, and relative
-  database, metadata and opening-import paths.
+- `exchange.cfg` is strict JSON, schema `exchange.environment.v2`: environment
+  identity, uppercase three-letter currency, two decimal places, relative
+  database/metadata/opening paths, and `runtime` settings for the workspace,
+  loopback bind/port and external key-file path. See
+  [APPLICATION_SERVICE.md](APPLICATION_SERVICE.md) for its exact runtime fields.
+  Legacy v1 configurations remain supported for explicit plaintext native
+  fixtures. They are not the encrypted application launcher contract.
+- The persisted and public business configuration remains
+  `exchange.environment.v1`. The loader removes v2 `runtime` settings and uses
+  that business projection for matching/replay. A port or key-path edit does
+  not alter accounting; changing key contents still requires a supported
+  re-encryption procedure, which is not implemented.
 - `metadata.json` uses `exchange.environment-metadata.v1`: display metadata and
   the matching SKU catalog. Provenance is explicitly `synthetic` or `observed`;
   this is a declaration, not independent verification.
@@ -251,13 +284,46 @@ see a complete old or new envelope. A failed pre-replacement write retains its
 pending file for inspection. A failure after replacement can have an uncertain
 result: reopen and check the original event ID; never blindly submit a new ID.
 Do not delete lock or pending files as an automatic cleanup step. Backups and
-operator-guided recovery remain roadmap work.
+operator-guided recovery remain roadmap work; the narrowly scoped migration
+below is not a complete backup system.
 
-Configuration and metadata must match their initialized parsed values. Currency,
-catalog, labels and provenance changes are rejected; formatting-only changes are
-allowed. There is no reset or general migration command. Database paths remain
+The encrypted adapter uses IdyDB's built-in authenticated encryption. Required
+encryption refuses a plaintext store or absent/wrong key; opening a database is
+not permission to convert it. An explicit plaintext legacy fixture remains a
+separate contract. No key bytes enter the stored business configuration.
+
+Business configuration and metadata must match their initialized parsed values.
+Currency, catalog, labels and provenance changes are rejected; formatting-only
+changes are allowed. Runtime settings are excluded from this comparison. There
+is no reset or general migration command. Database paths remain
 relative beneath `data/`, end in `.idydb` and cannot traverse symlinks or parent
 directories. Inputs stay outside `data/` and `reports/`.
+
+## Explicit environment migration
+
+The command below supports the approved rename/encryption migration from a
+plaintext v1 environment into a prepared v2 encrypted environment:
+
+```sh
+exchange_environment migrate SOURCE_DIRECTORY DESTINATION_DIRECTORY --key-file KEY_PATH
+```
+
+Stop writers first and resolve any uncertain browser request with its original
+ID before migrating. The destination must have its own configuration, metadata
+and opening JSON with the new environment identity. The command validates the
+source and destination, writes `data/migration-original.idydb` as an encrypted
+copy of the original persisted envelope, creates the encrypted destination
+database and verifies both. It changes environment identity where required,
+preserving monetary amounts, event identities, ordered records and accounting
+effects. It does not initialize new example trading or delete the source.
+
+The original envelope is a recovery artifact, not a complete filesystem backup.
+Protect the external key and retain the recovery database separately as
+appropriate. Source-folder cleanup, handling earlier plaintext reports and
+replacement of the old container are separate explicit steps after verification;
+normal startup performs none of them. Encryption does not securely erase old
+storage blocks or encrypt JSON imports, reports and browser outbox data.
+Migration does not clear the browser's old environment-scoped pending requests.
 
 ## Bounds and evidence
 
@@ -273,9 +339,11 @@ record and preserves the existing operation. These are implementation bounds,
 not production capacity claims.
 
 The [verification record](../../../docs/exchange-simulation-verification.md)
-records executed checks. The full native suite passed **16/16** tests for this
-checkpoint, including real HTTP/native transactions, storage concurrency and
-pure accounting. The connected UI's deterministic Node checks also passed.
+records executed checks, including the separate C++ server migration results.
+The earlier transaction checkpoint passed **16/16** native tests, including
+HTTP/native transactions, storage concurrency and pure accounting. Its connected
+UI deterministic Node checks also passed. Those earlier results do not by
+themselves verify the replacement HTTP server.
 These fixtures exercise account transitions, reopen/replay, duplicate/conflicting IDs, stale
 revisions and uncertain acknowledgements. This does not establish actual vendor
 outcomes, complete crash recovery, backup restoration or worker authorization.

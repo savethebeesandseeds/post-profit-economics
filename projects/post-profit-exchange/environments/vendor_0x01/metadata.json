@@ -1,6 +1,6 @@
 {
   "schema_version": "exchange.environment-metadata.v1",
-  "display_name": "Vendor operation — example exchange",
+  "display_name": "Vendor 0x01",
   "description": "Synthetic opening records for inspecting an exchange environment. These are example amounts, not observed trading or a proposed worker salary.",
   "provenance": "synthetic",
   "products": [

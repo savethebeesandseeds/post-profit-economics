@@ -14,9 +14,6 @@ pins=(
   build-essential=12.9 gcc=4:12.2.0-3 gcc-12=12.2.0-14+deb12u1
   g++=4:12.2.0-3 g++-12=12.2.0-14+deb12u1 make=4.3-4.1
   cmake=3.25.1-1 cmake-data=3.25.1-1
-  python3=3.11.2-1+b1 python3-minimal=3.11.2-1+b1
-  python3.11=3.11.2-6+deb12u8 python3.11-minimal=3.11.2-6+deb12u8
-  libpython3-stdlib=3.11.2-1+b1 libpython3.11-stdlib=3.11.2-6+deb12u8
 )
 missing=()
 for pin in "${pins[@]}"; do
@@ -57,8 +54,7 @@ for pin in "${pins[@]}"; do
   }
 done
 [[ "$(g++ -dumpfullversion)" == 12.2.0 &&
-   "$(cmake --version | head -n 1)" == 'cmake version 3.25.1' &&
-   "$(python3 --version)" == 'Python 3.11.2' ]] || {
+   "$(cmake --version | head -n 1)" == 'cmake version 3.25.1' ]] || {
   echo 'Executable versions do not match the dependency pins.' >&2; exit 1;
 }
 dpkg-query -W -f='${Package}=${Version}\n' > "$inventory/debian-packages.txt"

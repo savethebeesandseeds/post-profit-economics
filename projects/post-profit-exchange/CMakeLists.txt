@@ -65,6 +65,7 @@ if(PH_EXCHANGE_BUILD_ENVIRONMENT)
     code/operations/opening.cpp
     code/operations/transactions.cpp
     code/storage/environment_store.cpp
+    code/platform/files.cpp
     code/interfaces/environment.cpp)
   target_include_directories(ph_exchange_environment PUBLIC code)
   target_include_directories(ph_exchange_environment SYSTEM PUBLIC ../../tools/price-optimization/third_party)
@@ -72,7 +73,25 @@ if(PH_EXCHANGE_BUILD_ENVIRONMENT)
   target_compile_options(ph_exchange_environment PRIVATE -Wall -Wextra -Wpedantic)
   add_executable(exchange_environment code/interfaces/environment_main.cpp)
   target_link_libraries(exchange_environment PRIVATE ph_exchange_environment)
+
+  # Vendored unmodified release: deterministic, offline native builds.
+  set(PH_HTTPLIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/code/third_party/cpp-httplib")
+  file(SHA256 "${PH_HTTPLIB_DIR}/httplib.h" PH_HTTPLIB_SHA256)
+  if(NOT PH_HTTPLIB_SHA256 STREQUAL "bc77114769db3b3c97e4a6d753dab797c3cadaaa48beead3806298b09702df18")
+    message(FATAL_ERROR "cpp-httplib source differs from the pinned v0.61.0 release")
+  endif()
+  find_package(Threads REQUIRED)
+  add_executable(exchange_server code/interfaces/server_main.cpp code/interfaces/server_platform.cpp)
+  target_include_directories(exchange_server SYSTEM PRIVATE "${PH_HTTPLIB_DIR}")
+  target_link_libraries(exchange_server PRIVATE ph_exchange_environment Threads::Threads)
+  target_compile_options(exchange_server PRIVATE -Wall -Wextra -Wpedantic)
   if(BUILD_TESTING)
+    add_executable(exchange_server_platform_test code/tests/server_platform_test.cpp code/interfaces/server_platform.cpp)
+    target_include_directories(exchange_server_platform_test PRIVATE code)
+    target_link_libraries(exchange_server_platform_test PRIVATE Threads::Threads)
+    add_test(NAME exchange_server_platform COMMAND exchange_server_platform_test)
+    add_test(NAME exchange_server_shutdown COMMAND exchange_server_platform_test --shutdown)
+    set_tests_properties(exchange_server_platform exchange_server_shutdown PROPERTIES TIMEOUT 10)
     add_executable(exchange_environment_store_test code/tests/environment_store_test.cpp)
     target_link_libraries(exchange_environment_store_test PRIVATE ph_exchange_environment ph::idydb)
     add_test(NAME exchange_environment_store COMMAND exchange_environment_store_test)
@@ -82,8 +101,12 @@ if(PH_EXCHANGE_BUILD_ENVIRONMENT)
     find_package(Python3 COMPONENTS Interpreter REQUIRED)
     add_test(NAME exchange_transactions_integration
       COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/code/tests/transactions_integration_test.py"
-        $<TARGET_FILE:exchange_environment> "${CMAKE_CURRENT_SOURCE_DIR}")
-    set_tests_properties(exchange_transactions_integration PROPERTIES TIMEOUT 60)
+        $<TARGET_FILE:exchange_environment> "${CMAKE_CURRENT_SOURCE_DIR}" $<TARGET_FILE:exchange_server>)
+    set_tests_properties(exchange_transactions_integration PROPERTIES TIMEOUT 90)
+    add_test(NAME exchange_encrypted_environment
+      COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/code/tests/encrypted_environment_test.py"
+        $<TARGET_FILE:exchange_environment> "${CMAKE_CURRENT_SOURCE_DIR}" $<TARGET_FILE:exchange_server>)
+    set_tests_properties(exchange_encrypted_environment PROPERTIES TIMEOUT 90)
     add_executable(exchange_environment_test code/tests/environment_test.cpp)
     target_link_libraries(exchange_environment_test PRIVATE ph_exchange_environment)
     add_test(NAME exchange_environment COMMAND exchange_environment_test)

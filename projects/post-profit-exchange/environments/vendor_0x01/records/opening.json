@@ -1,6 +1,6 @@
 {
   "schema_version": "exchange.opening.v1",
-  "environment_id": "vendor-operation",
+  "environment_id": "vendor_0x01",
   "as_of": "2026-10-14",
   "cash": 100000,
   "reserve": 5000,

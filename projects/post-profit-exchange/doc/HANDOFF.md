@@ -1,13 +1,14 @@
 <!-- SPDX-License-Identifier: MIT -->
 # Development handoff: post-profit-exchange
 
-Reviewed against code on 2026-10-14. Start with this file, the [project README](../README.md),
+Accounting review: 2026-10-14; encrypted environment/launcher checkpoint: 2026-10-15. Start with this file, the [project README](../README.md),
 [store specification](STORE_SPECIFICATION.md), [simulation contract](CONTRACT.md),
 [models](MODELS.md), [file records](FILES.md) and current
 [verification record](../../../docs/exchange-simulation-verification.md).
 The verification record, not this handoff, is authoritative for checks performed.
 Start with the README's plain-language explanation and recorded two-day example.
-The exchange now uses a project-local `doc/`, `code/`, `web/` layout. The headless
+The exchange now uses a project-local `doc/`, `code/`, `web/` layout, with configured
+operations in `environments/`. The headless
 C++ model and configuration contents are preserved; build, packaging and source
 archive paths follow the new layout. Preserve the distinction between a tested research model and
 an operation validated with observed data.
@@ -40,11 +41,50 @@ Follow [ROADMAP.md](ROADMAP.md) for milestone order and acceptance gates, and
 The [operating-environment checkpoint](OPERATING_ENVIRONMENT.md) now records
 paid deliveries, FIFO cash sales and new paid/unpaid expenses on persisted opening
 accounts. Native C++ owns the transitions; IdyDB stores opening records and ordered
-events, and inspection replays them. The shared connected interface calls the
-native commands through a small local HTTP transport. The approved
+events, and inspection replays them. The shared connected interface uses
+`exchange_server`, a C++ cpp-httplib transport that calls the same environment
+functions as the native commands. No Python service or subprocess bridge is
+required. The approved
 [application-service setup](APPLICATION_SERVICE.md) gives each operation a
 container named from its environment ID and a configurable loopback port.
 Retain the general development container; verify each launch independently.
+The existing Windows executable under `code/launcher/dist/` accepts `--config`
+and delegates container lifecycle to the authoritative PowerShell launcher.
+It remains a Docker-dependent wrapper, distinct from the native Windows port.
+The selected v2 config supplies workspace, loopback port and the path of a
+separate symmetric secret outside the checkout.
+IdyDB encryption covers the database and migration recovery, not JSON inputs,
+exports or browser state. Missing/wrong keys never trigger plaintext fallback.
+Build the executable with the pinned Linux cross-compiler, never a host toolchain.
+The migrated `vendor_0x01` and executable launch were verified at the
+[2026-10-15 checkpoint](../../../docs/exchange-simulation-verification.md#2026-10-15-encrypted-environment-and-configuration-launcher),
+with unchanged accounts at revision 0. The previous folder/container is retired;
+use the current configuration path and service contract.
+
+The [native Windows application checkpoint](WINDOWS_NATIVE.md) keeps the same
+accounting and browser interface and starts the C++ server directly from the
+central configuration. Its intended vendor runtime needs neither Docker nor WSL.
+Exchange-owned startup/shutdown, Unicode paths, key-file handling, Windows
+storage integration, cross-build configuration and packaging code is present.
+IdyDB's Windows backend and x64 static/shared SDKs now exist. A small consumer
+using the seven required C API functions linked with exchange's MinGW compiler
+and the actual BIG IdyDB/OpenSSL libraries; it was not run. The complete native
+application has not yet passed database-backed acceptance or been packaged.
+Freeze the exact dependency package and evidence, align the storage contract,
+then run the application checks described in the native Windows guide. Do not
+treat a link check or Wine platform tests as completed integration. Real
+Windows/NTFS acceptance remains required; the security fixtures must not turn
+unsupported cases into passing evidence.
+
+Leave `tools/idydb/` entirely unchanged. Its Windows implementation, tests,
+encryption, data format, decrypted working storage and durability guarantees
+belong to its maintainers. Use the explicit dependency contract and integration
+tests in `code/windows/` to integrate a pinned library package; do not introduce a
+replacement or plaintext fallback. Build and test only inside the managed
+development container, including cross-compilation and Wine checks. Preserve
+the current live container and records. The separate AMPL subprocess port is
+outside this Windows checkpoint.
+
 Continue with the remaining accounting/recovery cases before shadow pricing.
 IdyDB in repository `tools/idydb/` is the selected database; its implementation
 is maintained separately. Exchange owns only its integration in `code/storage/`.
@@ -59,7 +99,7 @@ Do not implement a universal economic framework or a synthetic fallback in a
 live-operation path.
 
 The vendor demonstration is a consumer of this application. Keep its configuration,
-sample records in `code/environments/vendor-operation/`, with the implemented
+sample records in `environments/vendor_0x01/`, with the implemented
 contract and walkthrough in `doc/OPERATING_ENVIRONMENT.md`.
 It uses the shared `web/operations/` interfaces and normal commands with its own
 IdyDB data directory. Build each reusable workflow first, exercise it through
@@ -67,8 +107,10 @@ that environment, and improve the shared interface from the findings. Do not add
 another accounting implementation, a demonstration-only UI or scenario-specific
 branches to application code. An environment means data/configuration/metadata;
 the Debian development container is a separate concern. Generated database and
-report files remain private and excluded from release sources. Configuration
-and metadata cannot change after initialization. Existing v1 opening-only stores
+report files remain private and excluded from release sources. Business configuration
+and metadata cannot generally change after initialization. V2 runtime settings
+are excluded from stored/public business configuration. The approved explicit
+rename/encryption migration is separate from ordinary startup. Existing v1 opening-only stores
 remain readable without mutation; the first transaction writes v2 with opening
 records and ordered raw events. Inspection replays those events, not a modified
 seed file. Same-ID identical retries apply once; conflicts/stale revisions fail.
@@ -142,10 +184,13 @@ comparator can end on a different date; never hide that difference in totals.
 | Location | Responsibility |
 | --- | --- |
 | `code/operations/opening.cpp`, `transactions.cpp` | State validation, acquisition-basis totals and delivery/sale/new-expense transitions; no I/O or synthetic behavior. |
-| `code/storage/environment_store.cpp` | Exact JSON envelopes in IdyDB, writer locking, expected-state checks and verified atomic replacement; database internals stay in the independent tool. |
+| `code/storage/environment_store.cpp`, `environment_store_windows.cpp` | Platform-specific exchange envelope adapters, writer coordination and expected-state checks. The Linux implementation remains supported; Windows database-backed acceptance against a pinned IdyDB SDK remains pending. Database internals stay in the independent tool. |
+| `code/platform/` | File/path handling and secure key-file access, separated from business rules and database cryptography. |
+| `code/windows/` | Native Windows cross-build, external dependency contract, packaging and test runners; no host toolchain. |
+| `code/launcher/` | Existing Windows wrapper for the Debian container service, retained separately from the native application. |
 | `code/interfaces/environment.cpp`, `environment_main.cpp` | Config/metadata loading, ordered-event replay, initialize/inspect/transact/render commands and snapshot generation. |
-| `code/interfaces/serve.py` | Local HTTP/session transport calling the C++ command; no economic calculations. |
-| `code/environments/vendor-operation/` | Synthetic example inputs; generated database/report paths are ignored. |
+| `code/interfaces/server_main.cpp`, `server_platform.hpp/.cpp` | Shared C++ HTTP/session transport, operating-system startup/shutdown and Windows browser launch; no economic calculations. |
+| `environments/vendor_0x01/` | Synthetic example inputs; generated database/report paths are ignored. |
 | `web/operations/` | Shared connected transaction form and separate read-only snapshot; display native accounts, preserve retry identities, never publish prices. |
 | `code/configs/exchange.cfg` | Central strict-JSON research configuration, including all product/settings values. Its simulation section supplies build-time embedded defaults. |
 | `code/records/empty-history.json` | Default empty observations; no fabricated operating history is loaded. |
@@ -263,7 +308,8 @@ runtime, configuration or packaged source. The SDK, caches and intermediate
 outputs now use container-local storage; see the environment guide.
 The explicit release file list in `web/package-html.py` must include any new
 required source or support file; update the packaged-source checks with it.
-Keep operational run directories and imported history out of release source
+Keep generated EXE/DLL files, real external dependency receipts, secret keys,
+databases, operational run directories and imported history out of release source
 archives; only the empty default and declared synthetic sample are intentional
 record examples. Include the reusable exponential-smoothing tool's source and MIT license
 in the corresponding-source archive. Embedded

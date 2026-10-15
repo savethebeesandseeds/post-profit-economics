@@ -3,8 +3,10 @@
 IdyDB is an MIT-licensed C++17 library with a C API for sparse, file-backed
 cells and vectors. It stores integers, floats, text, booleans and float vectors,
 supports filtered nearest-neighbor search, and offers encrypted backing files.
-Compile `upstream/impl/db.cpp` and include `upstream/include/db.h`; OpenSSL
-Crypto is required for every build, including plaintext use.
+Prefer the upstream CMake target, which selects the storage backend. Direct
+Linux builds compile `upstream/impl/db.cpp` and
+`upstream/impl/platform_posix.cpp` and include `upstream/include/db.h`;
+OpenSSL Crypto is required for every build, including plaintext use.
 
 This tool remains optional and experimental. The revised shared implementation
 corrects the parsing and persistence defects in the original import and adds
@@ -14,11 +16,13 @@ for the tested scope and remaining limits.
 
 ## Source and maintenance
 
-The [upstream directory](upstream/) contains a snapshot of the standalone project
-at `C:\Work\idydb`, its regression suites, original README and complete
-[MIT license](upstream/LICENSE). [Provenance](PROVENANCE.md) records the source
-commit, uncommitted working-tree changes, file mapping and checksums. This is a
-tested working-tree snapshot, not an unchanged copy of that commit.
+The [upstream directory](upstream/) contains the standalone project from
+committed and pushed revision
+[`11dfda0`](https://github.com/savethebeesandseeds/IdyDB/commit/11dfda017a4b5163357d991421ab06ff75ebdf98),
+including its regression suites, original README and complete
+[MIT license](upstream/LICENSE). [Provenance](PROVENANCE.md) records all 25
+committed-file mappings and checksums. The imported files match the raw Git
+blobs at that revision; the shared implementation has no local patches.
 
 Corrections and additions to shared database code belong in the standalone
 project and this imported snapshot, with matching tests and documentation. Review
@@ -58,9 +62,18 @@ target is enabled. `ph::idydb` aliases the upstream `idydb` CMake target and
 propagates its include path, OpenSSL dependency and sizing definitions. Link that
 target so the consumer and library use the same sizing mode.
 
-The wrapper retains the local `idydb_roundtrip` test alongside imported core,
-query, persistence, C API, failure and directory tests. Fault injection uses a
-separate instrumented test library; hooks are absent from the production target.
+The installed-package fixture in `upstream/tests/consumer` also supports
+`-DIDYDB_CONSUMER_C_ONLY=ON`. It configures with only the C language enabled and
+checks that the exported static target supplies its runtime and math link
+dependencies without requiring the application to select a C++ linker.
+
+The wrapper retains the local `idydb_roundtrip` test alongside eight imported
+suites: core, query, persistence, C API, failure, directory, platform and record
+compatibility. Fixed synthetic plaintext and encrypted fixtures check the
+existing file encoding; their passphrase is public test data. Installed C and
+C++ consumer sources also accompany the snapshot. Fault injection and the
+private backing-image snapshot helper use a separate instrumented test library;
+both are absent from the production target.
 Executed configurations and results are recorded in the [review](REVIEW.md).
 
 ## Persistence and API behavior
@@ -85,6 +98,13 @@ duplicate of the descriptor and keeps file creation, replacement and directory s
 relative to that pinned directory. Basename symlinks are rejected. Read-only
 opens through `/proc/self/fd` can read pinned old inodes after replacement, as
 required by the Linux exchange adapter.
+
+The shared snapshot also contains a separate native Windows storage backend,
+UTF-8 pathname support and `idydb_alloc` for allocator-safe embedding callbacks
+across library boundaries. This refresh validates this repository's Linux
+integration; the standalone project records its own Windows validation. It
+does not change or establish support for the consumer application's Windows
+storage, server or packaging code. `idydb_open_at` remains POSIX-only.
 
 Updates copy the whole database and require temporary space proportional to its
 size. Atomic replacement requires directory write access and changes the file's

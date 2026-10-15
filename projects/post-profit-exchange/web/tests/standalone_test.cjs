@@ -7,6 +7,7 @@ const vm = require('node:vm');
 const {Worker} = require('node:worker_threads');
 const {execFileSync} = require('node:child_process');
 const {inflateRawSync} = require('node:zlib');
+const {createHash} = require('node:crypto');
 const page = fs.readFileSync(process.argv[2], 'utf8');
 const runtime = page.match(/<script id="wasm-runtime" type="text\/plain">([\s\S]*?)<\/script>/)?.[1];
 const app = page.match(/<script>([\s\S]*?)<\/script>/)?.[1];
@@ -33,16 +34,27 @@ for (let index=0; index<archive.readUInt16LE(end+10); index++) {
 const prefix='projects/post-profit-exchange/';
 for (const name of ['README.md','CMakeLists.txt','code/configs/exchange.cfg','code/records/empty-history.json',
   'code/records/sample-history.json','code/records/README.md','doc/FILES.md','doc/CONTRACT.md','doc/ENVIRONMENT.md',
-  'doc/ROADMAP.md','doc/STRUCTURE.md','doc/OPERATING_ENVIRONMENT.md','doc/APPLICATION_SERVICE.md',
+  'doc/ROADMAP.md','doc/STRUCTURE.md','doc/OPERATING_ENVIRONMENT.md','doc/APPLICATION_SERVICE.md','doc/WINDOWS_NATIVE.md',
   'code/operations/opening.hpp','code/operations/opening.cpp',
   'code/operations/transactions.hpp','code/operations/transactions.cpp',
   'code/storage/environment_store.hpp','code/storage/environment_store.cpp',
+  'code/storage/environment_store_windows.cpp','code/storage/windows_lock.hpp',
+  'code/platform/files.hpp','code/platform/files.cpp','code/platform/windows_files.hpp','code/platform/windows_files.cpp',
   'code/interfaces/environment.hpp','code/interfaces/environment.cpp','code/interfaces/environment_main.cpp',
-  'code/interfaces/serve.py','code/interfaces/application-container.ps1','code/interfaces/run-service.sh',
+  'code/interfaces/server_main.cpp','code/interfaces/server_platform.hpp','code/interfaces/server_platform.cpp',
+  'code/interfaces/application-container.ps1','code/interfaces/run-service.sh',
+  'code/launcher/main.cpp','code/launcher/windows_arguments.hpp','code/launcher/arguments_test.cpp',
+  'code/launcher/setup.sh','code/launcher/build.sh','code/launcher/launcher_test.ps1',
+  'code/windows/CMakeLists.txt','code/windows/toolchain-mingw.cmake','code/windows/setup.sh','code/windows/build.sh',
+  'code/windows/dependency.py','code/windows/idydb-package.example.json','code/windows/test_build_tools.py',
+  'code/windows/run_windows_test.py','code/windows/integration_test.ps1','code/windows/package.py','code/windows/README.md',
+  'code/third_party/cpp-httplib/httplib.h','code/third_party/cpp-httplib/LICENSE','code/third_party/cpp-httplib/PROVENANCE.md',
   'code/tests/environment_store_test.cpp','code/tests/environment_test.cpp',
-  'code/tests/transactions_test.cpp','code/tests/transactions_integration_test.py',
-  'code/environments/.gitignore','code/environments/vendor-operation/exchange.cfg',
-  'code/environments/vendor-operation/metadata.json','code/environments/vendor-operation/records/opening.json',
+  'code/tests/transactions_test.cpp','code/tests/transactions_integration_test.py','code/tests/encrypted_environment_test.py',
+  'code/tests/server_platform_test.cpp','code/tests/windows_platform_files_test.cpp','code/tests/windows_files_security_test.cpp',
+  'code/tests/windows_environment_store_test.cpp',
+  'environments/.gitignore','environments/vendor_0x01/exchange.cfg',
+  'environments/vendor_0x01/metadata.json','environments/vendor_0x01/records/opening.json',
   'web/operations/transactions.html','web/tests/transactions_view_test.cjs',
   'web/operations/environment.template.html','web/tests/environment_view_test.cjs',
   'code/main.cpp','code/files.hpp','code/files.cpp','code/tests/files_test.cpp','code/models.hpp','code/models.cpp',
@@ -68,16 +80,53 @@ assert(![...entries.keys()].some(name=>name.startsWith(prefix+'web/') &&
 for (const name of ['include/ph/exponential_smoothing/ewma.hpp','src/ewma.cpp','CMakeLists.txt','LICENSE','README.md'])
   assert(entries.has('tools/exponential-smoothing/'+name),'independent exponential smoothing source supplied: '+name);
 const environmentSources = new Set([
-  'code/environments/.gitignore','code/environments/vendor-operation/exchange.cfg',
-  'code/environments/vendor-operation/metadata.json','code/environments/vendor-operation/records/opening.json'
+  'environments/.gitignore','environments/vendor_0x01/exchange.cfg',
+  'environments/vendor_0x01/metadata.json','environments/vendor_0x01/records/opening.json'
 ]);
-assert(![...entries.keys()].some(name => name.startsWith(prefix+'code/environments/') &&
+assert(![...entries.keys()].some(name => name.startsWith(prefix+'environments/') &&
   !environmentSources.has(name.slice(prefix.length))), 'private environments, databases and rendered reports excluded');
+assert(![...entries.keys()].some(name => name.startsWith(prefix+'code/environments/')),
+  'old environment path excluded after migration');
+const syntheticDatabases = new Map([
+  ['tools/idydb/upstream/tests/fixtures/portable-v1.db',
+    '6b573cdf9d88b3e559630dcf8058c3b8abf5bb7f903cfb9e84d223080ca50278'],
+  ['tools/idydb/upstream/tests/fixtures/portable-v1.encrypted.db',
+    '61cae19f4679d6b1b0dc251a6a80bdbb18c0adbf9c941d3befcd49efe4b608f8'],
+]);
+assert(![...entries.keys()].some(name => name.startsWith(prefix+'code/launcher/dist/') ||
+  /\.(?:key|idydb|exe|dll|pdb)$/i.test(name) || (/\.db$/i.test(name) && !syntheticDatabases.has(name))),
+  'keys, operational databases and generated Windows binaries excluded from source archive');
+assert(![...entries.keys()].some(name =>
+  /(?:^|\/)(?:exchange-idydb-windows|idydb-verified|windows-integration)\.json$/i.test(name)),
+  'real Windows dependency and acceptance receipts excluded from source archive');
+const windowsSources = new Set([
+  'CMakeLists.txt','toolchain-mingw.cmake','setup.sh','build.sh','dependency.py',
+  'idydb-package.example.json','test_build_tools.py','run_windows_test.py',
+  'integration_test.ps1','package.py','README.md'
+]);
+assert(![...entries.keys()].some(name => name.startsWith(prefix+'code/windows/') &&
+  !windowsSources.has(name.slice((prefix+'code/windows/').length))),
+  'only explicit native Windows source and example dependency metadata are packaged');
 for (const name of ['CMakeLists.txt','upstream/CMakeLists.txt','upstream/LICENSE','upstream/include/db.h','upstream/impl/db.cpp',
+  'upstream/impl/platform.h','upstream/impl/platform_posix.cpp','upstream/impl/platform_windows.cpp',
+  'upstream/cmake/idydbConfig.cmake.in',
   'upstream/tests/core_tests.cpp','upstream/tests/query_tests.cpp','upstream/tests/persistence_tests.cpp',
   'upstream/tests/c_api_test.c','upstream/tests/failure_tests.cpp','upstream/tests/failure_hooks.h',
-  'upstream/tests/directory_tests.cpp'])
+  'upstream/tests/directory_tests.cpp','upstream/tests/platform_tests.cpp',
+  'upstream/tests/compatibility_tests.cpp','upstream/tests/test_process.h',
+  'upstream/tests/fixtures/README.md','upstream/tests/fixtures/portable-v1.db',
+  'upstream/tests/fixtures/portable-v1.encrypted.db',
+  'upstream/tests/consumer/CMakeLists.txt','upstream/tests/consumer/consumer.c','upstream/tests/consumer/consumer.cpp'])
   assert(entries.has('tools/idydb/'+name), 'native environment IdyDB dependency source '+name);
+for (const [name, digest] of syntheticDatabases) {
+  const entry = entries.get(name);
+  assert(entry, 'synthetic compatibility fixture supplied: '+name);
+  const start = entry.offset+30+archive.readUInt16LE(entry.offset+26)+archive.readUInt16LE(entry.offset+28);
+  const compressed = archive.subarray(start,start+entry.size);
+  const content = entry.method===8 ? inflateRawSync(compressed) : compressed;
+  assert.equal(createHash('sha256').update(content).digest('hex'), digest,
+    'fixed synthetic fixture bytes preserved: '+name);
+}
 function sourceFile(name) {
   const entry=entries.get(prefix+name); assert(entry,'missing source '+name);
   assert.equal(archive.readUInt32LE(entry.offset),0x04034b50,'source ZIP local entry');

@@ -15,3 +15,4 @@
 CMakeLists.txt text eol=lf
 LICENSE text eol=lf
 LICENSE-* text eol=lf
+tools/idydb/upstream/tests/fixtures/*.db binary

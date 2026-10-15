@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 # Roadmap: from simulation to vendor operation
 
-Status: implementation roadmap, 2026-10-14. The simulator exists, and the first
+Status: implementation roadmap, 2026-10-15. The simulator exists, and the first
 [operating-environment checkpoint](OPERATING_ENVIRONMENT.md) persists opening
 records and delivery, cash-sale and new-expense transactions. The connected
 interface is implemented; its approved [local service launch](APPLICATION_SERVICE.md)
@@ -9,6 +9,12 @@ uses one container per configured operation and retains the general development
 container. Launch readiness is separately verified by the launcher. Milestones 1 and 2 remain
 partial; no milestone below is complete. Price proposals/publication, broader
 accounting workflows and funded assurance remain future work.
+
+A separate [native Windows delivery](WINDOWS_NATIVE.md) is being prepared so
+vendors can use the C++ application without Docker or WSL. IdyDB's Windows SDKs
+now exist and a small MinGW consumer linked successfully; the full application
+still needs a pinned dependency package and native acceptance. This delivery work
+does not complete any accounting, governance or continuity milestone below.
 
 Our aim is a practical, inspectable exchange that vendors can operate under
 worker control without a passive owner, with separately funded protection
@@ -51,7 +57,7 @@ walkthrough are separate from operational code; follow the
 It uses the same operator interface and application commands as a vendor
 deployment, with its own configured IdyDB data directory.
 
-The first environment lives at `code/environments/vendor-operation/`, with
+The first environment lives at `environments/vendor_0x01/`, with
 central `.cfg`, metadata, a synthetic opening import, its own generated IdyDB
 database and a generated read-only report. The shared connected interface records
 activity through the normal native commands; it contains no example-specific
@@ -125,8 +131,12 @@ writers and atomically replaces a verified database. Identical event retries app
 once. The browser retains unconfirmed request identities across reloads; these
 requests are not accounting authority. The current bound is 100 events and
 60 KiB. Existing opening-only v1 data remains readable and becomes v2 on the first
-accepted transaction. Configuration/metadata changes, general migrations, reset,
-full recovery and backup procedures remain unsupported. Use a configured private
+accepted transaction. The v2 operating configuration selects an external key and
+requires encrypted storage; its runtime fields are excluded from accounting
+configuration comparisons. An explicit offline rename/encryption migration
+retains an encrypted original envelope. General configuration/metadata changes,
+migrations, reset, full recovery and backup procedures remain unsupported.
+Use a configured private
 data directory, separate from checked-in example records.
 
 Record stable event identities, source references, ordering and state revisions.
@@ -227,7 +237,9 @@ successful operation are outcomes to establish, not consequences of an event log
 **Deliver:** installation and update instructions for an ordinary vendor setup,
 a supported catalog/accounting scope, access controls, tested backup restoration,
 failure recovery and an identified support/maintenance responsibility.
-The current recovered development container is not a portable vendor installer.
+The current container deployment is not a portable vendor installer. The
+[native Windows delivery](WINDOWS_NATIVE.md) must pass its dependency, storage,
+HTTP/accounting and release checks before it can satisfy this installation gate.
 
 Agree the observation period, initial resources, measures and operating limits
 before the trial. Track customer access/prices, worker obligations, stock/waste,

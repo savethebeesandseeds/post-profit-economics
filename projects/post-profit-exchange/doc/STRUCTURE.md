@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 # Exchange folders and separation of concerns
 
-Status: contributor instructions, 2026-10-14. The root separation
-`doc/`, `code/`, `web/` exists. Operations, storage and interfaces now contain the
+Status: contributor instructions, 2026-10-15. The root separation
+`doc/`, `code/`, `web/` exists, with configured operations in `environments/`. Operations, storage and interfaces contain the
 [opening and transaction checkpoint](OPERATING_ENVIRONMENT.md); their broader
 responsibilities below remain incremental work. See [ROADMAP.md](ROADMAP.md)
 for sequence and acceptance gates.
@@ -16,20 +16,28 @@ for sequence and acceptance gates.
 | `code/simulation/` — planned | Synthetic consumers, declared shocks, scenario clocks, policy comparisons and research run orchestration. | A second implementation of shared exchange accounting or live transaction ingestion. |
 | `code/storage/` — transaction checkpoint implemented | Exchange-specific IdyDB adapter, versioned record schemas, strict configuration/JSON serialization, and integration of ordering, recovery, replay and backups. | Database internals, choosing prices, inventing transactions or deciding worker/assurance authority. |
 | `code/interfaces/` — transaction checkpoint implemented | Native commands, WASM entry points, actual-record imports, authorization and publication/assurance transport adapters. | Duplicated accounting, optimization objectives or synthetic fallback behavior. |
-| `code/environments/` | Operation-specific central configuration, metadata, opening imports and private persisted transactions/data/reports; only the declared synthetic example is distributed. | Economic rules, database internals or a second UI implementation. |
+| `environments/` | Operation-specific central configuration, metadata, opening imports and private persisted transactions/data/reports; only the declared synthetic example is distributed. | Economic rules, database internals or a second UI implementation. |
+| `code/platform/` | Exchange-owned operating-system file access, path validation and secure key-file reads. | Database cryptography, decrypted working storage, account transitions or UI. |
+| `code/windows/` | Native Windows cross-build configuration, external IdyDB dependency checks, packaging and test runners. | A substitute database, edits to IdyDB, host build tools or private operation data. |
+| `code/launcher/` | Existing Windows wrapper for the Debian container service and its Linux cross-build scripts. | Native Windows server implementation, accounting, duplicated Docker lifecycle or secrets. |
 | `code/configs/` | Declared example configuration and future versioned configuration examples. | Hidden runtime overrides or competing sources of policy. |
 | `code/records/` | Empty default and explicitly synthetic, distributable record examples. | Real vendor records, credentials or automatically imported operating data. |
 | `code/tests/` | Deterministic accounting, simulation, persistence and interface cases. | Fixtures represented as real-world evidence. |
+| `code/third_party/cpp-httplib/` | Pinned HTTP library, upstream license and provenance. | Exchange accounting, local patches without provenance or build-time downloads of an unpinned release. |
 | `web/` | Operator controls, charts, import/export presentation and packaging. | Authoritative financial calculations or direct mutation of business records. |
 
 Native C++ remains the preferred home for exchange operations and numerical work.
 The reusable optimizer, exponential smoothing, optional TFT and selected IdyDB
 database stay in repository `tools/`, under their existing licenses. IdyDB's
 implementation is maintained independently; exchange consumes it through its
-storage adapter. Do not copy these tools into the exchange or create a universal
+storage adapter. For Windows, IdyDB supplies its encryption, decrypted working
+storage and durability guarantees. Exchange owns envelope validation, writer
+coordination and the call boundary; it does not implement database internals. Do not copy these tools into the exchange or create a universal
 store/factory/laboratory framework.
 
-Configuration remains one central `.cfg` for an operation. The first operational
+Configuration remains one central `.cfg` for an operation, including runtime
+settings and the location of a separate key file. Keep secret contents outside
+the checkout; runtime fields are excluded from business-record comparisons. The first operational
 opening state and ordered event records use IdyDB. JSON is
 the import/export and fixture format, and the simulator retains its JSON run files. Choose a private database/data
 directory through configuration and keep it out of source exports. The existing
@@ -52,10 +60,10 @@ Keep the implemented environment material in these locations:
 
 | Location | Responsibility |
 | --- | --- |
-| `code/environments/vendor-operation/` | One scenario `.cfg`, clearly labeled synthetic JSON inputs, and private generated database/report files. Normal application commands initialize and inspect it. No duplicate accounts, prices or storage implementation. |
+| `environments/vendor_0x01/` | One scenario `.cfg`, clearly labeled synthetic JSON inputs, and private generated database/report files. Normal application commands initialize and inspect it. No duplicate accounts, prices or storage implementation. |
 | `doc/OPERATING_ENVIRONMENT.md` | Implemented contract, setup instructions, first walkthrough and remaining boundaries. |
 | `web/operations/` | Shared operator workspace (Home, Record, Stock, Activity and Advanced) and a separate read-only snapshot template. Controls call normal application interfaces; sample setup stays outside ordinary workflows. |
-| `code/interfaces/serve.py` | Local HTTP transport to native commands; no accounts, synthetic inputs or database internals. See [APPLICATION_SERVICE.md](APPLICATION_SERVICE.md) for the approved per-environment container launch. |
+| `code/interfaces/server_main.cpp`, `server_platform.hpp/.cpp` | Shared C++ HTTP/session transport plus Linux and Windows startup, shutdown, randomness and browser-launch support. Environment functions retain accounting. See [APPLICATION_SERVICE.md](APPLICATION_SERVICE.md) for the working container deployment and [WINDOWS_NATIVE.md](WINDOWS_NATIVE.md) for the native Windows dependency boundary. |
 
 The example's name, catalog, balances and assumptions belong in configuration
 and input records. Existing simulator defaults remain in `code/configs/` and
@@ -69,18 +77,29 @@ state; this checkpoint has no reset command and refuses a second initialization.
 Any future reset must be explicit and scoped to the selected operation. Do not
 add fixture-specific branches to accounting.
 
-Each operational environment has its own application container and loopback
-endpoint under the [service contract](APPLICATION_SERVICE.md). Shared code stays
+The current Linux deployment gives each operational environment its own
+application container and loopback endpoint under the
+[service contract](APPLICATION_SERVICE.md). Shared code stays
 read-only; its selected configuration/database is writable at `/operation`,
-while other exchange environments are masked. This runtime boundary does not
+while other exchange environments are masked. Its separate key is mounted read-only.
+This runtime boundary does not
 put application code inside the environment. Retain the general development
 container for common build/test work. `code/setup.sh` prepares dependencies and
 environment only; launchers own lifecycle and application commands own records.
 
+The native Windows delivery will run the same C++ application directly against
+a configured environment, without a vendor Docker/WSL requirement. Its
+exchange-owned files and tests are present. IdyDB's Windows backend and SDKs now
+exist; the complete native application still needs a pinned package, storage
+contract alignment and Windows/NTFS acceptance. See [WINDOWS_NATIVE.md](WINDOWS_NATIVE.md)
+for the dependency and evidence requirements. Do not move the live operation,
+invent a replacement database or weaken key protections to bypass those checks.
+The native AMPL subprocess port is outside this checkpoint.
+
 The dependency runs from example setup and walkthrough to normal application
 interfaces, then to operations and storage, then to independent tools.
 The shared interfaces render results for any configured operation; interactive
-controls call the same native commands. Removing the
+controls and native commands call the same C++ environment functions. Removing the
 example must leave the application buildable and usable with another configuration.
 
 Use each implemented workflow in the environment as it becomes available.
@@ -173,3 +192,9 @@ local links and the explicit release list in `web/package-html.py`.
 Keep application/tool/vendor license boundaries intact. Keep SDKs and build
 intermediates inside the managed Debian container; see [ENVIRONMENT.md](ENVIRONMENT.md).
 Do not add empty future folders, placeholder classes or unused dependencies.
+
+Native source packaging includes the Windows integration and build scripts.
+External dependency receipts, database libraries and generated executables are
+not corresponding-source inputs. Native release packaging has a separate
+explicit manifest under `code/windows/` and must never collect an environment,
+key, decrypted file or private dependency receipt.

@@ -20,3 +20,6 @@ Desktop.ini
 ampl.lic
 ampl.lic.*
 *.license-key
+
+# Windows launcher built only inside the managed Debian container.
+/projects/post-profit-exchange/code/launcher/dist/

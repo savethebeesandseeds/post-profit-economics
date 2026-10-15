@@ -60,26 +60,60 @@ with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslev
         'doc/STRUCTURE.md',
         'doc/OPERATING_ENVIRONMENT.md',
         'doc/APPLICATION_SERVICE.md',
+        'doc/WINDOWS_NATIVE.md',
         'code/operations/opening.hpp',
         'code/operations/opening.cpp',
         'code/operations/transactions.hpp',
         'code/operations/transactions.cpp',
         'code/storage/environment_store.hpp',
         'code/storage/environment_store.cpp',
+        'code/storage/environment_store_windows.cpp',
+        'code/storage/windows_lock.hpp',
+        'code/platform/files.hpp',
+        'code/platform/files.cpp',
+        'code/platform/windows_files.hpp',
+        'code/platform/windows_files.cpp',
         'code/interfaces/environment.hpp',
         'code/interfaces/environment.cpp',
         'code/interfaces/environment_main.cpp',
-        'code/interfaces/serve.py',
+        'code/interfaces/server_main.cpp',
+        'code/interfaces/server_platform.hpp',
+        'code/interfaces/server_platform.cpp',
+        'code/third_party/cpp-httplib/httplib.h',
+        'code/third_party/cpp-httplib/LICENSE',
+        'code/third_party/cpp-httplib/PROVENANCE.md',
         'code/interfaces/application-container.ps1',
         'code/interfaces/run-service.sh',
+        'code/launcher/main.cpp',
+        'code/launcher/windows_arguments.hpp',
+        'code/launcher/arguments_test.cpp',
+        'code/launcher/launcher_test.ps1',
+        'code/launcher/setup.sh',
+        'code/launcher/build.sh',
+        'code/windows/CMakeLists.txt',
+        'code/windows/toolchain-mingw.cmake',
+        'code/windows/setup.sh',
+        'code/windows/build.sh',
+        'code/windows/dependency.py',
+        'code/windows/idydb-package.example.json',
+        'code/windows/test_build_tools.py',
+        'code/windows/run_windows_test.py',
+        'code/windows/integration_test.ps1',
+        'code/windows/package.py',
+        'code/windows/README.md',
         'code/tests/environment_store_test.cpp',
         'code/tests/environment_test.cpp',
         'code/tests/transactions_test.cpp',
         'code/tests/transactions_integration_test.py',
-        'code/environments/.gitignore',
-        'code/environments/vendor-operation/exchange.cfg',
-        'code/environments/vendor-operation/metadata.json',
-        'code/environments/vendor-operation/records/opening.json',
+        'code/tests/encrypted_environment_test.py',
+        'code/tests/server_platform_test.cpp',
+        'code/tests/windows_platform_files_test.cpp',
+        'code/tests/windows_files_security_test.cpp',
+        'code/tests/windows_environment_store_test.cpp',
+        'environments/.gitignore',
+        'environments/vendor_0x01/exchange.cfg',
+        'environments/vendor_0x01/metadata.json',
+        'environments/vendor_0x01/records/opening.json',
         'web/operations/environment.template.html',
         'web/tests/environment_view_test.cjs',
         'web/operations/transactions.html',
@@ -113,20 +147,46 @@ with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslev
     files += [project / name for name in exchange_sources]
     files += [p for p in (root / "tools/price-optimization").rglob("*") if p.is_file()]
     files += [p for p in (root / "tools/exponential-smoothing").rglob("*") if p.is_file() and "__pycache__" not in p.parts]
-    # Native environment source is supplied, but no database or private instance.
+    # Native environment source includes only fixed synthetic database fixtures;
+    # operational databases and private instances are excluded.
     files += [root / "tools/idydb" / name for name in (
         "CMakeLists.txt", "README.md", "PROVENANCE.md", "REVIEW.md",
         "tests/roundtrip_test.cpp", "upstream/CMakeLists.txt",
         "upstream/README.md", "upstream/LICENSE",
         "upstream/include/db.h", "upstream/impl/db.cpp",
+        "upstream/impl/platform.h", "upstream/impl/platform_posix.cpp",
+        "upstream/impl/platform_windows.cpp", "upstream/cmake/idydbConfig.cmake.in",
         "upstream/tests/core_tests.cpp", "upstream/tests/query_tests.cpp",
         "upstream/tests/persistence_tests.cpp", "upstream/tests/c_api_test.c",
         "upstream/tests/failure_tests.cpp", "upstream/tests/failure_hooks.h",
-        "upstream/tests/directory_tests.cpp")]
+        "upstream/tests/directory_tests.cpp", "upstream/tests/platform_tests.cpp",
+        "upstream/tests/compatibility_tests.cpp", "upstream/tests/test_process.h",
+        "upstream/tests/fixtures/README.md", "upstream/tests/fixtures/portable-v1.db",
+        "upstream/tests/fixtures/portable-v1.encrypted.db",
+        "upstream/tests/consumer/CMakeLists.txt", "upstream/tests/consumer/consumer.c",
+        "upstream/tests/consumer/consumer.cpp")]
+    # A source archive must never collect generated Windows dependencies,
+    # application binaries or operational secrets, even if a tool adds one.
+    private_names = {"exchange-idydb-windows.json", "idydb-verified.json",
+                     "windows-integration.json"}
+    synthetic_databases = {
+        "tools/idydb/upstream/tests/fixtures/portable-v1.db":
+            "6b573cdf9d88b3e559630dcf8058c3b8abf5bb7f903cfb9e84d223080ca50278",
+        "tools/idydb/upstream/tests/fixtures/portable-v1.encrypted.db":
+            "61cae19f4679d6b1b0dc251a6a80bdbb18c0adbf9c941d3befcd49efe4b608f8",
+    }
     for path in sorted(set(files)):
-        info = zipfile.ZipInfo(path.relative_to(root).as_posix(), (2026, 9, 20, 0, 0, 0))
+        relative = path.relative_to(root).as_posix()
+        if (path.suffix.lower() in {".key", ".idydb", ".exe", ".dll", ".pdb"} or
+                path.name.lower() in private_names or
+                (path.suffix.lower() == ".db" and relative not in synthetic_databases)):
+            raise SystemExit(f"Private/generated file is not a source input: {path.relative_to(root)}")
+        content = path.read_bytes()
+        if relative in synthetic_databases and hashlib.sha256(content).hexdigest() != synthetic_databases[relative]:
+            raise SystemExit(f"Synthetic database fixture differs from its fixed hash: {relative}")
+        info = zipfile.ZipInfo(relative, (2026, 9, 20, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
-        bundle.writestr(info, path.read_bytes())
+        bundle.writestr(info, content)
     for i, (title, content) in enumerate(notice_text):
         info = zipfile.ZipInfo(f"runtime-notices/{i}.txt", (2026, 9, 20, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED

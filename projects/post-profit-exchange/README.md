@@ -12,13 +12,31 @@ the people involved.
 
 The current delivery includes a headless C++ research model, an offline browser
 simulator and a first [operating-environment checkpoint](doc/OPERATING_ENVIRONMENT.md),
-reviewed on **2026-10-14**. The operational checkpoint saves opening accounts and
+with its accounting review recorded on **2026-10-14**. The operational checkpoint saves opening accounts and
 records paid deliveries, cash sales and new paid/unpaid expenses in IdyDB. A shared
 connected workspace opens on Home, with focused Record, Stock and Activity
 views; Advanced contains full accounts and read-only settings. It displays the
 native account updates. A generated snapshot remains available for read-only inspection. The approved [application-service setup](doc/APPLICATION_SERVICE.md) gives each
 operation its own container and loopback endpoint, while retaining the general
-development container. Container creation/readiness is checked by the launcher.
+development container. Configured operations live in `environments/`, starting
+with `vendor_0x01`. The existing Windows container launcher accepts that operation's
+`exchange.cfg` and starts the C++ service in Debian, then opens the interface.
+That launcher still requires Docker Desktop. The configured IdyDB database is
+encrypted; input JSON and explicit reports remain separate plaintext files.
+The [service instructions](doc/APPLICATION_SERVICE.md) describe that working
+deployment and its launch command.
+
+A separate [native Windows application](doc/WINDOWS_NATIVE.md) is being prepared
+to read the same central configuration, open the key and environment, and run the
+C++ server directly. Vendors using that delivery will need neither Docker nor
+WSL. Exchange-owned startup, file handling and build/packaging code is present.
+IdyDB now provides a Windows backend and x64 static/shared libraries. A small
+consumer executable linked successfully with exchange's MinGW compiler and the
+actual BIG IdyDB/OpenSSL libraries; it was not executed. The complete native
+application still needs a pinned dependency package, storage-contract alignment
+and Windows/NTFS acceptance before release. IdyDB owns its encryption, decrypted
+working storage and Windows durability. See the native Windows guide for the
+exact integration boundary. The current Linux service and records remain in place.
 Operational price recommendations, worker authorization and funded assurance
 remain to be integrated. Protection against catastrophic failure is an aim to
 establish through those arrangements, not a guarantee from the simulator.
@@ -260,10 +278,13 @@ post-profit-exchange/
     operations/         opening validation and transaction/account transitions
     storage/            exchange-specific IdyDB adapter
     interfaces/         environment commands, snapshot rendering and HTTP transport
-    environments/       per-operation config, metadata, records and private data
+    platform/           operating-system file access and key-file checks
+    windows/            native Windows cross-build, dependency checks and packaging
+    launcher/           existing Windows wrapper for the Debian container service
     configs/            central simulator .cfg defaults
     records/            empty history and explicitly synthetic examples
     tests/              native deterministic tests
+  environments/         per-operation config, metadata, records and private data
   web/                  browser controls and charts, WASM build and packaging
     operations/         shared connected entry and read-only snapshot template
     tests/              native/WASM parity and packaged-interface checks
@@ -276,7 +297,7 @@ The native command line and browser share the same C++ operation model:
 | --- | --- | --- |
 | Headless engine | `ph::exchange::run_json` in `code/simulation.hpp` | Strict JSON commands and complete simulated runs with accounts and explanations. |
 | Operating environment | `exchange_environment initialize/inspect/transact/render` | Opening records, ordered transactions, IdyDB replay and current account reports; no price proposals yet. |
-| Connected operator view | `code/interfaces/serve.py` and `web/operations/transactions.html` | Same-origin local entry forms calling native commands; configuration and data come from the selected environment. |
+| Connected operator view | C++ `exchange_server` in `code/interfaces/server_main.cpp` and `web/operations/transactions.html` | cpp-httplib serves local entry forms and calls the same C++ environment functions as the command line; configuration and data come from the selected environment. |
 | Native records | `exchange_simulation --config`, `--example-config`, or JSON on stdin | Configuration/history input, new run directories and exact request replay. |
 | Browser adapter | C ABI `exchange_run` through WebAssembly in a worker | Runs the same model; JavaScript renders results and handles explicit imports/exports. |
 | Computing tools | Independent price optimizer and simple exponential smoothing under repository `tools/` | Reusable numerical work; exchange retains its operating policy, stock, accounts and consumer assumptions. |
@@ -323,7 +344,7 @@ procedures and backup integration remain roadmap work; the present limit is
 100 transactions in a 60 KiB envelope.
 
 Development and tests run in the existing managed `post-profit-economics-gpu`
-container. The connected application runs in a separate container per operation,
+container. The current Linux deployment runs in a separate container per operation,
 using the shared source and that operation's private data. Follow the
 [exchange environment guide](doc/ENVIRONMENT.md) for container-local builds and
 [application service](doc/APPLICATION_SERVICE.md) for operation lifecycle. Keep
@@ -334,7 +355,8 @@ project toolchains on Windows.
 | Document | Read it for |
 | --- | --- |
 | [Operating environment](doc/OPERATING_ENVIRONMENT.md) | Opening records, delivery/sale/expense entry, IdyDB replay, worked accounts and limits. |
-| [Application service](doc/APPLICATION_SERVICE.md) | Approved per-environment containers, local endpoints and lifecycle commands. |
+| [Application service](doc/APPLICATION_SERVICE.md) | Existing per-environment containers, local endpoints and lifecycle commands. |
+| [Native Windows application](doc/WINDOWS_NATIVE.md) | Direct Windows startup, cross-build and packaging, tests and the pending IdyDB dependency. |
 | [Roadmap](doc/ROADMAP.md) | Milestones and acceptance gates from simulation to vendor operation. |
 | [Folder instructions](doc/STRUCTURE.md) | Ownership, dependencies and incremental separation of code and interfaces. |
 | [Store specification](doc/STORE_SPECIFICATION.md) | Policy, exact price formulation, daily operation and authority boundaries. |
